@@ -24,9 +24,5 @@
           - "{{ vault_credential | default('ansible-vault') }}"
         validate_certs: true
         execution_environment: "Default execution environment"
-    - name: Load remediation workflow template
-      ansible.controller.workflow_job_template:
-        name: Remediation Workflow
-        organization: Default
-        state: present
+
         
