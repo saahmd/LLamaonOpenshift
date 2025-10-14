@@ -6,7 +6,7 @@
 
     - name: Send POST request using uri module
       ansible.builtin.uri:
-        url: "http://{{ rhelai_server }}:{{ rhelai_port }}/v1/completions"
+        url: "http://{{ rhelai_server }}/v1/completions"
         method: POST
         headers:
           accept: "application/json"
@@ -27,7 +27,7 @@
 
     - name: Send RCA prompt to RHEL AI (Root Cause Analysis)
       ansible.builtin.uri:
-        url: "http://{{ rhelai_server }}:{{ rhelai_port }}/v1/completions"
+        url: "http://{{ rhelai_server }}/v1/completions"
         method: POST
         headers:
           accept: "application/json"
