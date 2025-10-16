@@ -15,7 +15,7 @@
         body:
           prompt: "{{ gpt_prompt | default('What is the capital of the USA?') }}"
           max_tokens: "{{ max_tokens | default('50') }}"
-          model: "Llama-4-Scout-17B-16E-W4A16"
+          model: "llama-4-scout-17b-16e-w4a16"
           temperature: "{{ input_temperature | default(0) }}"
           top_p: "{{ input_top_p | default(1) }}"
           n: "{{ input_n | default(1) }}"
@@ -36,7 +36,7 @@
         body:
           prompt: "{{ rca_prompt }}"
           max_tokens: "{{ rca_max_tokens | default(500) }}"
-          model: "Llama-4-Scout-17B-16E-W4A16"
+          model: "llama-4-scout-17b-16e-w4a16"
           temperature: "{{ input_temperature | default(0.5) }}"
           top_p: "{{ input_top_p | default(1) }}"
           n: "{{ input_n | default(1) }}"
