@@ -53,7 +53,7 @@
 
     - name: Copy Python streaming script
       copy:
-        src: "llm_turn_stream.py"
+        src: "../files/llm_turn_stream.py"
         dest: "/tmp/llm_turn_stream.py"
         mode: '0755'
 
