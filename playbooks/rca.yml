@@ -48,7 +48,7 @@
 
     - name: Create turn
       uri:
-        url: "https://lllc.com/v1/agents/{{ agent_response.json.id }}/session/{{ session_response.json.id }}/turn"
+        url: "https://llamastack-server-llama-serve.apps.cluster-bgzcw.bgzcw.sandbox942.opentlc.com/v1/agents/{{ agent_response.json.id }}/session/{{ session_response.json.id }}/turn"
         method: POST
         headers:
           Content-Type: "application/json"
