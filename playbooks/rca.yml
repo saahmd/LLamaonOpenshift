@@ -67,7 +67,7 @@
                 "context": "string"
               }
             ],
-            "stream": false,
+            "stream": true,
             "tool_config": {
               "tool_choice": "auto"
             }
