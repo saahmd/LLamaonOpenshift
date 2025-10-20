@@ -70,10 +70,10 @@
       ansible.builtin.debug:
         msg: "{{ turn_response.content }}"
 
-    - name: Parse JSON turn response
-      set_fact:
-        turn_data: "{{ turn_response.content | from_json }}"
+    - name: Extract final weather message
+      ansible.builtin.set_fact:
+        weather_message: "{{ turn_response.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
 
     - name: Display weather message
       ansible.builtin.debug:
-        msg: "{{ turn_data.event.payload.turn.output_message.content }}"
+        msg: "{{ weather_message }}"
