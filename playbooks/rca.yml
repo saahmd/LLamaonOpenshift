@@ -29,7 +29,9 @@
         validate_certs: no
       register: agent_response
 
-
+    - debug:
+    var: agent_response.json
+    
     - name: Create session
       uri:
         url: "https://llamastack-server-llama-serve.apps.cluster-bgzcw.bgzcw.sandbox942.opentlc.com/v1/agents/{{ agent_response.json.id }}/session"
