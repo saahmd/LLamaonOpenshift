@@ -47,7 +47,7 @@
         validate_certs: no
       register: session_response
 
-    - name: Display Agent response
+    - name: Display Session ID
       ansible.builtin.debug:
         msg: "{{ session_response.json }}"
 
@@ -77,5 +77,6 @@
         validate_certs: no
       register: turn_response
 
-    - debug:
-        var: turn_response.json
+    - name: Display Turn response
+          ansible.builtin.debug:
+            msg: "{{ turn_response.json }}"
