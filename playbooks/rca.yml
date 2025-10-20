@@ -70,13 +70,6 @@
       ansible.builtin.debug:
         msg: "{{ turn_response.content }}"
 
-    - name: Display Turn response (LLM Output Only)
+    - name: Display Turn response
       ansible.builtin.debug:
-        msg: >
-          {{ 
-            (turn_response.content | regex_replace('^data:\\s*', '', multiline=True)).split('\n')
-            | select('string')                                       # Crucial: filter out empty strings
-            | select('match', '.*turn_complete.*')                   # Select the line containing the final event
-            | last | from_json                                       # Parse the final line
-            | json_query('event.payload.turn.output_message.content') # Extract the content
-          }}
+        msg: "{{ turn_response.event.payload.turn.output_message.content }}"
