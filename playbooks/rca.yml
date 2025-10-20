@@ -72,15 +72,11 @@
 
     - name: Display Turn response (LLM Output Only)
       ansible.builtin.debug:
-        # 1. Clean the string: Remove "data:" prefix and newline characters.
-        # 2. Split the string into a list of individual JSON objects (strings).
-        # 3. Select the LAST item in the list, which is the final 'turn_complete' event.
-        # 4. Parse the last item into a JSON object using from_json.
-        # 5. Extract the final content using the JSON path.
         msg: >
           {{ 
-            (turn_response.content | regex_replace('^data:\s*', '')).split('\n')
-            | select('match', '.*turn_complete.*')
-            | last | from_json
-            | json_query('event.payload.turn.output_message.content') 
+            (turn_response.content | regex_replace('^data:\\s*', '', multiline=True)).split('\n')
+            | select('string')                                       # Crucial: filter out empty strings
+            | select('match', '.*turn_complete.*')                   # Select the line containing the final event
+            | last | from_json                                       # Parse the final line
+            | json_query('event.payload.turn.output_message.content') # Extract the content
           }}
