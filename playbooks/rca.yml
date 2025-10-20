@@ -18,7 +18,7 @@
               "toolgroups": ["mcp::aap"],
               "tool_config": {"tool_choice": "auto"},
               "model": "llama-3-2-3b",
-              "instructions": "You are a helpful assistant. When you use a tool always respond with a summary of the result.",
+              "instructions": "You are a helpful assistant that analyzes logs.",
               "enable_session_persistence": false
             }
           }
