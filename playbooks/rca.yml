@@ -30,7 +30,7 @@
       register: agent_response
 
     - debug:
-    var: agent_response.json
+      var: agent_response.json
     
     - name: Create session
       uri:
