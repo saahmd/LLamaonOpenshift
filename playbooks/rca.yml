@@ -69,3 +69,7 @@
     - name: Display Turn response
       ansible.builtin.debug:
         msg: "{{ turn_response.content }}"
+
+    - name: Display Turn response (LLM Output Only)
+      ansible.builtin.debug:
+        msg: "{{ (turn_response.content | from_json_list | last_element).event.payload.turn.output_message.content }}"
