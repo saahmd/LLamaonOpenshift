@@ -78,5 +78,5 @@
       register: turn_response
 
     - name: Display Turn response
-          ansible.builtin.debug:
-            msg: "{{ turn_response.json }}"
+      ansible.builtin.debug:
+        msg: "{{ turn_response.json }}"
