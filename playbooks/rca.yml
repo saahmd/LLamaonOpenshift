@@ -51,7 +51,7 @@
       ansible.builtin.debug:
         msg: "{{ session_response.json }}"
 
-    - name: Create turn
+    - name: Create turn1
       uri:
         url: "https://llamastack-server-llama-serve.apps.cluster-bgzcw.bgzcw.sandbox942.opentlc.com/v1/agents/{{ agent_response.json.agent_id }}/session/{{ session_response.json.session_id }}/turn"
         method: POST
