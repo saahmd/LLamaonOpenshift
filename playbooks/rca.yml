@@ -79,4 +79,4 @@
 
     - name: Display Turn response
       ansible.builtin.debug:
-        msg: "{{ turn_response.json }}"
+        msg: "{{ turn_response.content }}"
