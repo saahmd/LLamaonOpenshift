@@ -51,25 +51,32 @@
       ansible.builtin.debug:
         msg: "{{ session_response.json }}"
 
-    - name: Copy Python streaming script
-      copy:
-        src: "llm_turn_stream.py"
-        dest: "/tmp/llm_turn_stream.py"
-        mode: '0755'
+    - name: Create turn
+      uri:
+        url: "https://llamastack-server-llama-serve.apps.cluster-bgzcw.bgzcw.sandbox942.opentlc.com/v1/agents/{{ agent_response.json.agent_id }}/session/{{ session_response.json.session_id }}/turn"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body: |
+          {
+            "messages": [
+              {
+                "role": "user",
+                "content": "What is the weather in Hyd",
+                "context": "string"
+              }
+            ],
+            "stream": true,
+            "tool_config": {
+              "tool_choice": "auto"
+            }
+          }
+        body_format: json
+        return_content: yes
+        validate_certs: no
+      register: turn_response
 
-    - name: Run streaming turn via Python
-      command: >
-        python3 /tmp/llm_turn_stream.py
-        {{ agent_response.json.agent_id }}
-        {{ session_response.json.session_id }}
-        "What is the weather in Hyd"
-      register: turn_output
-
-    - name: Display merged LLM response from file
-      slurp:
-        src: /tmp/llm_turn_response.txt
-      register: llm_file
-
-    - name: Show full LLM output
-      debug:
-        msg: "{{ llm_file.content | b64decode }}"
+    - name: Display Turn response
+      ansible.builtin.debug:
+        msg: "{{ turn_response.content }}"
