@@ -1,0 +1,71 @@
+---
+- name: Agent → Session → LLM Turn (Python streaming)
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Create agent
+      uri:
+        url: "https://llamastack-server-llama-serve.apps.cluster-bgzcw.bgzcw.sandbox942.opentlc.com/v1/agents"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body: |
+          {
+            "agent_config": {
+              "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 512},
+              "toolgroups": ["mcp::aap"],
+              "tool_config": {"tool_choice": "auto"},
+              "model": "llama-3-2-3b",
+              "instructions": "You are a helpful assistant. When you use a tool always respond with a summary of the result.",
+              "enable_session_persistence": false
+            }
+          }
+        body_format: json
+        return_content: yes
+        validate_certs: no
+      register: agent_response
+
+    - name: Create session
+      uri:
+        url: "https://llamastack-server-llama-serve.apps.cluster-bgzcw.bgzcw.sandbox942.opentlc.com/v1/agents/{{ agent_response.json.agent_id }}/session"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body: '{"session_name": "string"}'
+        body_format: json
+        return_content: yes
+        validate_certs: no
+      register: session_response
+
+    - name: Create turn
+      uri:
+        url: "https://llamastack-server-llama-serve.apps.cluster-bgzcw.bgzcw.sandbox942.opentlc.com/v1/agents/{{ agent_response.json.agent_id }}/session/{{ session_response.json.session_id }}/turn"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body: |
+          {
+            "messages": [
+              {
+                "role": "user",
+                "content": "What is the weather in Hyd",
+                "context": "string"
+              }
+            ],
+            "stream": true,
+            "tool_config": {
+              "tool_choice": "auto"
+            }
+          }
+        body_format: json
+        return_content: yes
+        validate_certs: no
+      register: turn_response
+
+    - name: Display Turn response
+      ansible.builtin.debug:
+        msg: "{{ turn_response.content }}"
