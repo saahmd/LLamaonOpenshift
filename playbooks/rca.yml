@@ -52,7 +52,7 @@
             "messages": [
               {
                 "role": "user",
-                "content": "{{ gpt_prompt | default('What is the capital of the USA?') }}"
+                "content": "{{ gpt_prompt | default('What is the capital of the USA?') }}",
                 "context": "string"
               }
             ],
