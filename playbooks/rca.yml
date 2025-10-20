@@ -17,8 +17,8 @@
               "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 512},
               "toolgroups": ["mcp::aap"],
               "tool_config": {"tool_choice": "auto"},
-              "model": "llama-3-2-3b",
-              "instructions": "You are a helpful assistant that analyzes logs.",
+              "model": "granite-3-3-8b-instruct",
+              "instructions": "You are a helpful assistant that analyzes logs.Based on the logs below, Provide a single, concise fix instruction (1-2 lines).",
               "enable_session_persistence": false
             }
           }
