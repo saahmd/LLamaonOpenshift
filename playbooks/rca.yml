@@ -91,10 +91,10 @@
       ansible.builtin.debug:
         msg: "{{ turn_response.content }}"
 
-    - name: Extract final weather message
+    - name: Extract GPT Response
       ansible.builtin.set_fact:
-        weather_message: "{{ turn_response.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
+        gpt_response: "{{ turn_response.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
 
-    - name: Display weather message
+    - name: Display GPT Response
       ansible.builtin.debug:
-        msg: "{{ weather_message }}"
+        msg: "{{ gpt_response }}"
