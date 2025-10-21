@@ -9,9 +9,9 @@
     playbook_path: "{{ input_playbook_path | default('./lightspeed-response.yml') }}"
 
   tasks:
-    - name: Load playbook content
+    - name: Load playbook content from variable
       set_fact:
-        playbook_data: "{{ lookup('file', playbook_path) | from_yaml }}"
+        playbook_data: "{{ lightspeed_playbook | from_yaml }}"
 
     - name: Extract playbook name
       set_fact:
