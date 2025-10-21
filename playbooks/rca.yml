@@ -91,13 +91,9 @@
       ansible.builtin.debug:
         msg: "{{ turn_response_gpt.content }}"
 
-    - name: Extract GPT Response safely
+    - name: Extract GPT Response
       ansible.builtin.set_fact:
-        gpt_response: >-
-          {{ (turn_response_gpt.content
-              | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1')
-              | first)
-            | default('No response found') }}
+        gpt_response: "{{ turn_response_gpt.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
 
     - name: Display GPT Response
       ansible.builtin.debug:
