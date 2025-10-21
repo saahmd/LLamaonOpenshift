@@ -112,7 +112,7 @@
             "messages": [
               {
                 "role": "user",
-                "content": "{{ gpt_prompt | default('What is the capital of the USA?') }}",
+                "content": "{{ rca_prompt | default('What is the capital of the USA?') }}",
                 "context": "string"
               }
             ],
@@ -137,3 +137,10 @@
     - name: Display RCA Response
       ansible.builtin.debug:
         msg: "{{ rca_response }}"
+
+    
+    - name: Set stats for next controller job
+      ansible.builtin.set_stats:
+        data:
+          gpt_response: "{{ gpt_response }}"
+          rca_response: "{{ rca_response }}"
