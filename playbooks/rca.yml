@@ -37,7 +37,7 @@
         body: |
          {
             "agent_config": {
-             "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 512},
+             "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 3000},
               "model": "granite-8b-lab-v1",
               "instructions": "You are a helpful assistant that analyzes logs.Based on the logs below, Provide a single, concise fix instruction (1-2 lines).",
               "enable_session_persistence": false
@@ -85,16 +85,55 @@
         body_format: json
         return_content: yes
         validate_certs: no
-      register: turn_response
+      register: turn_response_gpt
 
     - name: Display Turn response
       ansible.builtin.debug:
-        msg: "{{ turn_response.content }}"
+        msg: "{{ turn_response_gpt.content }}"
 
     - name: Extract GPT Response
       ansible.builtin.set_fact:
-        gpt_response: "{{ turn_response.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
+        gpt_response: "{{ turn_response_gpt.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
 
     - name: Display GPT Response
       ansible.builtin.debug:
         msg: "{{ gpt_response }}"
+
+
+    - name: Create turn for RCA
+      uri:
+        url: "https://llamastack-server-llama-serve.apps.cluster-bgzcw.bgzcw.sandbox942.opentlc.com/v1/agents/{{ agent_response.json.agent_id }}/session/{{ session_response.json.session_id }}/turn"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body: |
+          {
+            "messages": [
+              {
+                "role": "user",
+                "content": "{{ rca_prompt | default('What is the capital of the USA?') }}",
+                "context": "string"
+              }
+            ],
+            "stream": true,
+            "tool_config": {
+              "tool_choice": "auto"
+            }
+          }
+        body_format: json
+        return_content: yes
+        validate_certs: no
+      register: turn_response_rca
+
+    - name: Display Turn response
+      ansible.builtin.debug:
+        msg: "{{ turn_response_rca.content }}"
+
+    - name: Extract RCA Response
+      ansible.builtin.set_fact:
+        rca_response: "{{ turn_response_rca.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
+
+    - name: Display RCA Response
+      ansible.builtin.debug:
+        msg: "{{ rca_response }}"
