@@ -121,7 +121,6 @@
               "tool_choice": "auto"
             }
           }
-        body_format: json
         return_content: yes
         validate_certs: no
       register: turn_response_rca
