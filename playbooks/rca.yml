@@ -175,7 +175,8 @@
         body:
           messages:
             - role: "user"
-              content: "{{ 'Remove Invalid Directive. Tell me which playbook can resolve this issue' }}"
+              #content: "{{ 'Remove Invalid Directive. Tell me which playbook can resolve this issue' }}"
+              content: "{{ 'The Apache HTTP Server on node1 is failing to start due to an invalid directive in the configuration file. Specifically, the directive 'InvalidDirectiveHere' is causing the main process to exit with a non-zero status code. This error message indicates that the directive is either misspelled or not defined in the server configuration. To resolve this issue, the invalid directive should be located and corrected or removed from the Apache configuration file. After making the necessary changes, the httpd service should be restarted to apply the updates and ensure that the Apache server is running as expected' }}"
           context: "string"
           stream: true
           tool_config:
