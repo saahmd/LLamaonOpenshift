@@ -178,7 +178,7 @@
           messages:
             - role: "user"
               #content: "{{ 'Remove Invalid Directive. Tell me which playbook can resolve this issue' }}"
-              "content": "{{ rca_prompt | default('What is the capital of the USA?') }}"
+              "content": "{{ rca_response | default('What is the capital of the USA?') }}"
               #content: " The Apache HTTP Server on node1 is failing to start due to an invalid directive in the configuration file. Specifically, the directive 'InvalidDirectiveHere' is causing the main process to exit with a non-zero status code. This error message indicates that the directive is either misspelled or not defined in the server configuration. Suggest Playbook "
           context: "string"
           stream: true
