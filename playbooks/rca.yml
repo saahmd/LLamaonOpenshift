@@ -168,7 +168,7 @@
 
     - name: Display RCA Response
       ansible.builtin.debug:
-        msg: "{{ rca_response.msg[0] }}"
+        msg: "{{ rca_response[0] }}"
 
 
     - name: Create turn
