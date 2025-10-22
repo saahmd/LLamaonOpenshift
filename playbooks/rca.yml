@@ -190,11 +190,11 @@
 
     - name: Extract RCA Response
       ansible.builtin.set_fact:
-        turn_response_decision: "{{ turn_response_decision | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') | default('') }}"
+        decision_response: "{{ turn_response_decision.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
 
     - name: Display RCA Response
       ansible.builtin.debug:
-        msg: "{{ turn_response_decision }}"
+        msg: "{{ decision_response }}"
 
 
     - name: Set stats for next controller job
