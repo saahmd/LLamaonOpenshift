@@ -175,7 +175,7 @@
         body:
           messages:
             - role: "user"
-              content: "{{ rca_response | default('What is the capital of the USA?') }}"
+              content: "{{ 'Invalid Directive found. Tell me which playbook can resolve this issue' }}"
           context: "string"
           stream: true
           tool_config:
