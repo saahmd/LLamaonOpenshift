@@ -143,8 +143,7 @@
             
               Always try to find the most relevant template. Use exact matches first, then close matches.
               Use the AAP tool only to get the template list — do not guess template names.
-              If no reasonably relevant template is found after checking the list, respond "No playbook found. User intervention required."
-
+              
               Do not provide explanations or additional text in the output.
               
         return_content: yes
