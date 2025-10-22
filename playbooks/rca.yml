@@ -141,6 +141,8 @@
                 - Matching should be case-insensitive.
                 - Prefer exact matches; if none are found, allow close matches.
               4. If a matching template is found, respond with the template name only.
+              5. If no match is found, respond exactly with: "human intervention required".
+
 
               Do not provide explanations or additional text in the output.
               Use the AAP tool only to get the template list — do not guess template names.
@@ -190,12 +192,8 @@
 
     - name: Extract RCA Response
       ansible.builtin.set_fact:
-        decision_response: >-
-          {{ (turn_response_decision.content 
-            | regex_search('(?s)"output_message".*?"content":"(.*?)"', '\\1') 
-            | default('hello sa')) 
-            | replace('\\n',' ') | replace('\\"','"') | trim }}
-            
+        decision_response: "{{ turn_response_decision.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
+
     - name: Display RCA Response
       ansible.builtin.debug:
         msg: "{{ decision_response }}"
