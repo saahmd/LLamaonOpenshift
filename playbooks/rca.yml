@@ -188,16 +188,18 @@
       ansible.builtin.debug:
         msg: "{{ turn_response_decision.content }}"
 
-    - name: Extract RCA Response
+    - name: Convert log string to JSON
       ansible.builtin.set_fact:
-        decision_response: >-
-          {{ (turn_response_decision.content 
-              | regex_findall('(?s)"output_message".*?"content":"([^"]+)"') 
-            | first) | default('hello sa') }}
+        log_json: "{{ turn_response_decision.content | from_json }}"
+
+    - name: Extract RCA response
+      ansible.builtin.set_fact:
+        decision_response: "{{ log_json.event.payload.turn.output_message.content | default('hello sa') }}"
 
     - name: Display RCA Response
       ansible.builtin.debug:
         msg: "{{ decision_response }}"
+
 
 
     - name: Set stats for next controller job
