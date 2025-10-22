@@ -117,34 +117,34 @@
         headers:
           Content-Type: "application/json"
           Accept: "application/json"
-        body: |
-         {
-            "agent_config": {
-             "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 512},
-              "toolgroups": ["mcp::aap"],
-              "tool_config": {"tool_choice": "auto"},
-              "model": "llama-3-2-3b",
-              "instructions": "
-
-                  You are a helpful assistant responsible for identifying the most relevant Ansible job template based on incoming log data.
-
-                  You have access to the AAP tool, and you must strictly use the function list_job_templates() to retrieve the list of all available job templates.
-
-                  Follow these steps:
-                  1. Read and analyze the logs provided in the user query.
-                  2. Use list_job_templates() to get the available templates.
-                  3. Match the most relevant job template name to the log content. 
-                    - Matching should be case-insensitive.
-                    - Prefer exact matches; if none are found, allow close matches.
-                  4. If a matching template is found, respond with the template name only.
-                  5. If no match is found, respond exactly with: \"human intervention required\".
-
-                  Do not provide explanations or additional text in the output.
-                  Use the AAP tool only to get the template list — do not guess template names.
-                    ",
-            }
-          }
         body_format: json
+        body:
+          agent_config:
+            sampling_params:
+              strategy:
+                type: "greedy"
+              max_tokens: 512
+            toolgroups:
+              - "mcp::aap"
+            tool_config:
+              tool_choice: "auto"
+            model: "llama-3-2-3b"
+            instructions: >
+              You are a helpful assistant responsible for identifying the most relevant Ansible job template based on incoming log data.
+
+              You have access to the AAP tool, and you must strictly use the function list_job_templates() to retrieve the list of all available job templates.
+
+              Follow these steps:
+              1. Read and analyze the logs provided in the user query.
+              2. Use list_job_templates() to get the available templates.
+              3. Match the most relevant job template name to the log content.
+                - Matching should be case-insensitive.
+                - Prefer exact matches; if none are found, allow close matches.
+              4. If a matching template is found, respond with the template name only.
+              5. If no match is found, respond exactly with: "human intervention required".
+
+              Do not provide explanations or additional text in the output.
+              Use the AAP tool only to get the template list — do not guess template names.
         return_content: yes
         validate_certs: no
       register: agent_response_decision
@@ -188,7 +188,20 @@
         body_format: json
         return_content: yes
         validate_certs: no
-      register: turn_response_gpt
+      register: turn_response_decision
+
+    - name: Display Turn response
+      ansible.builtin.debug:
+        msg: "{{ turn_response_decision.content }}"
+
+    - name: Extract RCA Response
+      ansible.builtin.set_fact:
+        turn_response_decision: "{{ turn_response_decision.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
+
+    - name: Display RCA Response
+      ansible.builtin.debug:
+        msg: "{{ turn_response_decision }}"
+
 
     - name: Set stats for next controller job
       ansible.builtin.set_stats:
