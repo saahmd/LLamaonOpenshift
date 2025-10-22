@@ -126,8 +126,8 @@
               max_tokens: 512
             toolgroups:
               - "mcp::aap"
-            tool_config:
-              tool_choice: "auto"
+            #tool_config:
+            #  tool_choice: "auto"
             model: "llama-3-2-3b"
             instructions: >
               You are a helpful assistant responsible for identifying the most relevant Ansible job template based on incoming log data.
