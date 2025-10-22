@@ -190,20 +190,14 @@
       ansible.builtin.debug:
         msg: "{{ turn_response_decision.content }}"
 
-    - name: Extract Decision Response as string
+    - name: Set default decision response
       ansible.builtin.set_fact:
-        decision_response: >-
-          {{ (turn_response_decision.content
-            | regex_search('(?s)"output_message".*?"content":"(.*?)"', '\\1')
-            | default('hello sa'))
-            | replace('\\n',' ') 
-            | replace('\\"','"') 
-            | trim }}
+        decision_response: "hello sa"
 
-            
-    - name: Display RCA Response
+    - name: Display Decision Response
       ansible.builtin.debug:
         msg: "{{ decision_response }}"
+
 
 
 
