@@ -188,23 +188,12 @@
       ansible.builtin.debug:
         msg: "{{ turn_response_decision.content }}"
 
-    - name: Debug structure
-      ansible.builtin.debug:
-        var: turn_response_decision
-
-    - name: Test default
-      ansible.builtin.set_fact:
-        decision_response: "{{ turn_response_decision.content | default('hello sa') }}"
-    - name: Show test
-      ansible.builtin.debug:
-        msg: "{{ decision_response }}"
-
-
-
-
     - name: Extract RCA Response
       ansible.builtin.set_fact:
-        decision_response: "{{ turn_response_decision.content | regex_search('(?s)\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') | default('hello sa') }}"
+        decision_response: >-
+          {{ turn_response_decision.content
+            | regex_search('(?s)"output_message".*?"content":"([^"]*Remove invalid directive[^"]*)"', '\\1')
+            | default('hello sa') }}
 
     - name: Display RCA Response
       ansible.builtin.debug:
