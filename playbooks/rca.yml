@@ -140,9 +140,9 @@
               3. Match the most relevant job template name to the log content.
                 - Matching should be case-insensitive.
                 - Prefer exact matches; if none are found, allow close matches.
-              4. If a matching template is found, respond with the template name only.
+              4. ONLY respond "No playbook found. User intervention required." if the search truly returns no relevant results.
               
-
+              Bias toward finding matches - if there's any reasonable playbook, use it.
               Do not provide explanations or additional text in the output.
               Use the AAP tool only to get the template list — do not guess template names.
         return_content: yes
