@@ -191,9 +191,9 @@
     - name: Extract RCA Response
       ansible.builtin.set_fact:
         decision_response: >-
-          {{ turn_response_decision.content
-            | regex_search('(?s)"output_message".*?"content":"([^"]*Remove invalid directive[^"]*)"', '\\1')
-            | default('hello sa') }}
+          {{ (turn_response_decision.content 
+              | regex_findall('(?s)"output_message".*?"content":"([^"]+)"') 
+            | first) | default('hello sa') }}
 
     - name: Display RCA Response
       ansible.builtin.debug:
