@@ -190,15 +190,13 @@
       ansible.builtin.debug:
         msg: "{{ turn_response_decision.content }}"
 
-    - name: Set default decision response
+    - name: Extract RCA Response
       ansible.builtin.set_fact:
-        decision_response: "hello sa"
+        decision_response: "{{ turn_response_decision.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1') }}"
 
-    - name: Display Decision Response
+    - name: Display RCA Response
       ansible.builtin.debug:
         msg: "{{ decision_response }}"
-
-
 
 
     - name: Set stats for next controller job
