@@ -126,8 +126,8 @@
               max_tokens: 512
             toolgroups:
               - "mcp::aap"
-            #tool_config:
-            #  tool_choice: "auto"
+            tool_config:
+              tool_choice: "auto"
             model: "llama-3-2-3b"
             instructions: >
               You are a helpful assistant responsible for identifying the most relevant Ansible job template based on incoming log data.
@@ -140,11 +140,13 @@
               3. Match the most relevant job template name to the log content.
                 - Matching should be case-insensitive.
                 - Prefer exact matches; if none are found, allow close matches.
-              4. If no reasonably relevant template is found after checking the list, respond "No playbook found. User intervention required."
-
+            
               Always try to find the most relevant template. Use exact matches first, then close matches.
-              Do not provide explanations or additional text in the output.
               Use the AAP tool only to get the template list — do not guess template names.
+              If no reasonably relevant template is found after checking the list, respond "No playbook found. User intervention required."
+
+              Do not provide explanations or additional text in the output.
+              
         return_content: yes
         validate_certs: no
       register: agent_response_decision
