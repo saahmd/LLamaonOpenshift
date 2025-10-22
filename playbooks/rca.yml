@@ -143,7 +143,8 @@
             
               Always try to find the most relevant template. Use exact matches first, then close matches.
               Use the AAP tool only to get the template list — do not guess template names.
-              
+              If no reasonably relevant template is found after checking the list, respond "No playbook found. User intervention required."
+
               Do not provide explanations or additional text in the output.
               
         return_content: yes
@@ -177,8 +178,8 @@
           messages:
             - role: "user"
               #content: "{{ 'Remove Invalid Directive. Tell me which playbook can resolve this issue' }}"
-              "content": "{{ rca_response.msg[0] | default('What is the capital of the USA?') }}"
-              #content: " The Apache HTTP Server on node1 is failing to start due to an invalid directive in the configuration file. Specifically, the directive 'InvalidDirectiveHere' is causing the main process to exit with a non-zero status code. This error message indicates that the directive is either misspelled or not defined in the server configuration. Suggest Playbook "
+              #"content": "{{ rca_response.msg[0] | default('What is the capital of the USA?') }}"
+              content: " The Apache HTTP Server on node1 is failing to start due to an invalid directive in the configuration file. Specifically, the directive 'InvalidDirectiveHere' is causing the main process to exit with a non-zero status code. This error message indicates that the directive is either misspelled or not defined in the server configuration. Suggest Playbook "
           context: "string"
           stream: true
           tool_config:
