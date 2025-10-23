@@ -142,7 +142,8 @@
                   - Matching should be case-insensitive.
                   - Prefer exact matches; if none are found, allow close matches.
 
-              Always try to find the most relevant template. Use exact matches first, then close matches.
+              Always try to find the most relevant template.
+              Only if no template is found, return 'There are no existing templates, Human Intervention Required.
               Use the AAP tool only to get the template list — do not guess template names.
               
               Do not provide explanations or additional text in the output.
