@@ -142,7 +142,6 @@
                   - Matching should be case-insensitive.
                   - Prefer exact matches; if none are found, return 'Human Intervention Required'.
                   - If such a description is found and clearly aligns with the log content, select that template, and run it.
-                  - If a template is run return "Template (name) has been executed"
                   
               5. Prioritize accuracy over coverage — it is better to return “Human Intervention Required” than to suggest an incorrect template.
               
