@@ -149,8 +149,6 @@
               
               
 
-              Do not provide explanations or additional text in the output.
-
         return_content: yes
         validate_certs: no
       register: agent_response_decision
