@@ -140,16 +140,14 @@
               3. Use list_job_templates() to get the available templates and their descriptions.
               4. Match the most relevant job template description (and name, if necessary) to the log content.
                   - Matching should be case-insensitive.
-                  - If no exact or relevant match is found in the description, check for a possible match in the name.
-                  - If neither provides a clear match, return “Human Intervention Required.”
-                  - When evaluating descriptions, check whether any template explicitly states that it “resolves,” “remediates,” “fixes,” “deploys,” or “reconfigures” the issue mentioned in the logs.
-                  - If such a description is found and clearly aligns with the log content, select that template, run that template, and return a message stating that the specific template (by name) has been executed.
+                  - Prefer exact matches; if none are found, return 'Human Intervention Required'.
+                  - If such a description is found and clearly aligns with the log content, select that template.
                   
-                  - If neither the name nor the description clearly matches the issue in the logs, return “Human Intervention Required.”
-
               5. Prioritize accuracy over coverage — it is better to return “Human Intervention Required” than to suggest an incorrect template.
               
+              Bias towards finding the most relevant template. 
               
+              Use the AAP tool only to get the template list — do not guess template names. 
 
               Do not provide explanations or additional text in the output.
 
