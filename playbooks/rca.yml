@@ -141,7 +141,7 @@
               4. Match the most relevant job template description (and name, if necessary) to the log content.
                   - Matching should be case-insensitive.
                   - Prefer exact matches; if none are found, return 'Human Intervention Required'.
-                  - If such a description is found and clearly aligns with the log content, select that template, run it.
+                  - If such a description is found and clearly aligns with the log content, select that template, run it and return template name.
 
               5. Prioritize accuracy over coverage — it is better to return “Human Intervention Required” than to suggest an incorrect template.
               
