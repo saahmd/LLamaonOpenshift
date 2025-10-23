@@ -1,0 +1,73 @@
+---
+- name: Retrieve additional info for AI
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Set systemd facts
+      ansible.builtin.set_fact:
+        linux_service: "{{ input_linux_service | default('httpd') }}"
+
+    - name: Check if httpd is running
+      check_mode: true
+      ansible.builtin.systemd_service:
+        state: started
+        name: "{{ linux_service }}"
+      register: service_status
+
+    - name: Check if httpd is running
+      ansible.builtin.debug:
+        msg: "{{ service_status }}"
+
+    - name: Fail if service is running properly
+      ansible.builtin.fail:
+        msg: >
+          The {{ linux_service }} service is already running correctly.
+          No troubleshooting is needed. Current status shows service is active.
+      when: not service_status.changed
+
+    - name: Check if status of {{ linux_service }}
+      ansible.builtin.debug:
+        msg: "{{ service_status.status.ActiveState if service_status.status.ActiveState is defined else 'ActiveState not found' }}"
+
+    - name: Retrieve last 4 lines of httpd logs
+      ansible.builtin.command: "journalctl -u {{ linux_service }}.service -n 4"
+      register: systemd_logs
+      ignore_errors: true
+      changed_when: false
+
+    - name: Store httpd logs as a variable
+      ansible.builtin.set_fact:
+        systemd_log_output: "{{ systemd_logs.stdout }}"
+
+    - name: Display systemd logs
+      ansible.builtin.debug:
+        msg: "{{ systemd_log_output }}"
+
+    - name: Escape newlines in systemd logs
+      ansible.builtin.set_fact:
+        systemd_log_output_escaped: "{{ systemd_log_output | regex_replace('(\r?\n)', '\\\\n') }}"
+
+    - name: Set stats for next controller job
+      ansible.builtin.set_stats:
+        data:
+          slack_message: |
+            We have an issue on our Red Hat Enterprise Linux server with the {{ linux_service }} service.
+
+            The {{ linux_service }} service will not start.
+
+            Here are recent error logs: {{ systemd_log_output }}
+          max_tokens: 50
+          linux_service: "{{ linux_service }}"
+          gpt_prompt: >-
+            \n### Logs:\n{{ systemd_log_output_escaped }}\n
+            \n### Fix:\n
+          rca_prompt: >-
+            ### Instructions:
+            A system service is failing on node1. Analyze the logs below and
+            generate a Root Cause Analysis (RCA) in detail.
+
+            ### Logs:
+            {{ systemd_log_output_escaped }}
+
+            ### RCA:
