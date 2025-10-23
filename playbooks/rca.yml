@@ -142,10 +142,11 @@
                   - Matching should be case-insensitive.
                   - Prefer exact matches; if none are found, return 'Human Intervention Required'.
                   - If no exact match is found, check whether the description of any template explicitly states that it “resolves,” “remediates,” “fixes,” “deploys,” or “reconfigures” the issue mentioned in the logs.
-                  - If such a description is found and clearly aligns with the log content, select that template and return it's name.
+                  - If such a description is found and clearly aligns with the log content, select that template.
 
                   - If neither the name nor the description clearly matches the issue in the logs, return “Human Intervention Required.”
               5. Prioritize accuracy over coverage — it is better to return “Human Intervention Required” than to suggest an incorrect template.
+              
               
 
               Do not provide explanations or additional text in the output.
