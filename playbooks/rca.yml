@@ -147,8 +147,6 @@
                   - If neither the name nor the description clearly matches the issue in the logs, return “Human Intervention Required.”
               5. Prioritize accuracy over coverage — it is better to return “Human Intervention Required” than to suggest an incorrect template.
               
-              
-              Use the AAP tool only to get the template list — do not guess template names.
 
               Do not provide explanations or additional text in the output.
 
