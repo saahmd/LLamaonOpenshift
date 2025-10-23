@@ -147,10 +147,9 @@
                   - If neither the name nor the description clearly matches the issue in the logs, return “Human Intervention Required.”
               5. Prioritize accuracy over coverage — it is better to return “Human Intervention Required” than to suggest an incorrect template.
               
-              Output Requirement:
-              Return only the selected job template name as plain text.
-              If no suitable match is found, return exactly “Human Intervention Required."
               
+              Use the AAP tool only to get the template list — do not guess template names.
+
               Do not provide explanations or additional text in the output.
 
         return_content: yes
