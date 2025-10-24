@@ -140,9 +140,9 @@
               3. Use list_job_templates() to get the available templates.
               4. Match the most relevant job template name to the log content.
                   - Matching should be case-insensitive.
-                  - Prefer exact matches; if none are found, return 'Human Intervention Required.
+                  - Prefer exact matches; If template is found select it and run it. Else if none are found, return 'Human Intervention Required.
 
-              Bias towards finding the most relevant template. If template is found select it and run it.
+              Bias towards finding the most relevant template.
               Use the AAP tool only to get the template list — do not guess template names.
               
               Do not provide explanations or additional text in the output.
