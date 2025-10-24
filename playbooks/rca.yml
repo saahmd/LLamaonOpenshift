@@ -142,7 +142,7 @@
                   - Matching should be case-insensitive.
                   - Prefer exact matches; if none are found, return 'Human Intervention Required.
 
-              Bias towards finding the most relevant template.
+              Bias towards finding the most relevant template. If template is found select it and run it.
               Use the AAP tool only to get the template list — do not guess template names.
               
               Do not provide explanations or additional text in the output.
