@@ -141,12 +141,12 @@
               4. Match the most relevant job template description (and name, if necessary) to the log content.
                   - Matching should be case-insensitive.
                   - Prefer exact matches; if none are found, return 'Human Intervention Required'.
-                  - If such a description is found and clearly aligns with the log content, select that template, and run that template.
-                  
-              5. Prioritize accuracy over coverage — it is better to return “Human Intervention Required” than to suggest an incorrect template.
+                  - If template found, run that template and return 'Template has been executed'.
               
+              Bias towards finding the most relevant template. 
               
-              Use the AAP tool only to get the template list — do not guess template names. 
+              Use the AAP tool only to get the template list — do not guess template names.
+            
 
               Do not provide explanations or additional text in the output.
 
