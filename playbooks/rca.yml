@@ -128,7 +128,7 @@
               - "mcp::aap"
             tool_config:
               tool_choice: "auto"
-            model: "llama-4-scout-17b-16e-w4a16"
+            model: "llama-3-2-3b"
             instructions: >
               You are a helpful assistant responsible for identifying the most relevant Ansible job template based on incoming log data.
 
