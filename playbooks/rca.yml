@@ -145,7 +145,6 @@
                   
               5. Prioritize accuracy over coverage — it is better to return “Human Intervention Required” than to suggest an incorrect template.
               
-              Bias towards finding the most relevant template. 
               
               Use the AAP tool only to get the template list — do not guess template names. 
 
