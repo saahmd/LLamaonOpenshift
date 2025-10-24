@@ -140,7 +140,6 @@
               3. Use list_job_templates() to get the available templates.
               4. Match the most relevant job template description to the log content.  
                   - Select only templates that are intended to "resolve" or "fix" the issue indicated in the logs.
-                  - Avoid selecting templates whose descriptions include destructive keywords like "break", "delete", "destroy", or "remove".
                   - If a relevant template is found, select it and run it using run_job().
                   - If none are found, return "Human Intervention Required."
 
