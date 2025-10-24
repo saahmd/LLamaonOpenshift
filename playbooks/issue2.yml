@@ -1,0 +1,21 @@
+---
+- name: Simulate port 80 conflict for Apache
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Ensure python3 is installed
+      ansible.builtin.package:
+        name: python3
+        state: present
+
+    - name: Start dummy python web server on port 80
+      ansible.builtin.shell: |
+        nohup python3 -m http.server 80 >/tmp/fake_http.log 2>&1 &
+  handlers:
+    - name: Restart apache
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+      register: httpd_restart_result
+      failed_when: "'Job for httpd.service failed' not in httpd_restart_result.msg | default('')"
