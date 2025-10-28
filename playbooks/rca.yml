@@ -169,7 +169,7 @@
 
               4. **Conditional Execution**\n
                 - **If a relevant template is found:**\n
-                  - Run it using `run_job(template_id)`.  \n
+                  - Run it using `run_job(template_name)`.  \n
                   - Return the message:
                     ```
                     ✅ Executed the most relevant playbook successfully.
