@@ -144,7 +144,7 @@
                   - If a relevant template is found, select it.
                   - If none are found, return "Human Intervention Required."
 
-              
+              5. Only if a relevant template is found run it, else do nothing              
               6. Use the AAP tool only to get the template list — do not guess template names.
               
               7. Do not provide explanations or additional text in the output.
