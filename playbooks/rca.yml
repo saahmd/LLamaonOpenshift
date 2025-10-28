@@ -143,17 +143,20 @@
                   - Select only those templates that are intended to "resolve" or "fix" the issue indicated in the logs.\n
                   - Avoid selecting templates whose descriptions include destructive keywords like "break", "delete", "destroy", or "remove".\n
                   **Conditional Execution**
-                  - **If no relevant template is found:**
-                    - Return the message:
-                      ```
-                      ⚠️ Human Intervention Required.
-                    \n
                   - **If a relevant template is found where the description and logs match:**
                     - Run it using `run_job`.  
                     - Return the message:
                       ```
                       ✅ Executed the most relevant playbook successfully.
-                      ```  
+                      ```
+                  - **If no relevant template is found:**
+                    - Return the message:
+                      ```
+                      ⚠️ Human Intervention Required.
+                    \n
+              
+              
+                          
               6. Use the AAP tool only to get the template list — do not guess template names.\n
               
               7. Do not provide explanations or additional text in the output.\n
