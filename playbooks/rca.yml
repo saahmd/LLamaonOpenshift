@@ -143,12 +143,10 @@
                   - Avoid selecting templates whose descriptions include destructive keywords like "break", "delete", "destroy", or "remove".
                   - If a relevant template is found, select it and run it using run_job().
                   - If none are found, return "Human Intervention Required."
-
-              5. Bias towards finding the most relevant template.
               6. Use the AAP tool only to get the template list — do not guess template names.
               
               7. Do not provide explanations or additional text in the output.
-              
+
         return_content: yes
         validate_certs: no
       register: agent_response_decision
