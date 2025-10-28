@@ -47,7 +47,7 @@
               - title: Details
                 value: "{{ rca_response | default('No RCA available') | trim }}"
                 short: true
-      delegate_to: localhost
-      when: (rca_response.json.choices[0].text | default('') | length) > 0
+      
+     
 
     
