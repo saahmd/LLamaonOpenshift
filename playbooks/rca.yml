@@ -144,7 +144,7 @@
                 - Avoid selecting templatates that are a close match, only select those that are exact match between description and logs in user query.
                 **Conditional Execution**
                 - **If a relevant template is found where the description and logs match:**
-                  - Run it using `run_job()`tool.  
+                  - Use the run_job() to run that template.  
                   - Return the message:
                     ```
                     ✅ Executed the most relevant playbook successfully.
