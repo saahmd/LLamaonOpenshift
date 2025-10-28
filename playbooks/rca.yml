@@ -231,3 +231,4 @@
         data:
           gpt_response: "{{ gpt_response }}"
           rca_response: "{{ rca_response }}"
+          decision_response: "{{decision_response}}"

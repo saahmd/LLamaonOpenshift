@@ -48,6 +48,20 @@
                 value: "{{ rca_response[0] | default('No RCA available') }}"
                 short: true
       
+    - name: Send Decision Response to Slack
+      community.general.slack:
+        token: "{{ slack_token }}"
+        attachments:
+          - text: "!!!!!! Agent Action Response !!!!!!"
+            color: "#1e00ffff"
+            title: "{{ linux_service | capitalize }} Decision Response"
+            fields:
+              - title: RCA of {{ linux_service | capitalize }} error detected
+                value: "Decision taken by Agent"
+                short: true
+              - title: Details
+                value: "{{ decision_response[0] | default('N/A') }}"
+                short: true
      
 
     
