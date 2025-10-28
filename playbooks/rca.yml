@@ -141,10 +141,10 @@
               4. Match the most relevant job template description to the log content.  
                   - Select only templates that are intended to "resolve" or "fix" the issue indicated in the logs.
                   - Avoid selecting templates whose descriptions include destructive keywords like "break", "delete", "destroy", or "remove".
-                  - If a relevant template is found, select it.
+                  - If a relevant template is found, run it.
                   - If none are found, return "Human Intervention Required."
 
-              5. Only if a relevant template is found run it, else do nothing              
+                          
               6. Use the AAP tool only to get the template list — do not guess template names.
               
               7. Do not provide explanations or additional text in the output.
