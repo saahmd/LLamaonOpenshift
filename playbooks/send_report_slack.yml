@@ -45,7 +45,7 @@
                 value: "AI-Generated Explanation"
                 short: true
               - title: Details
-                value: "{{ rca_response | default('No RCA available') | trim }}"
+                value: "{{ rca_response | default('No RCA available') }}"
                 short: true
       
      
