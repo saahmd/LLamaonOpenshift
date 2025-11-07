@@ -62,10 +62,10 @@
           KAFKA_NODE_ID: "1"
           KAFKA_PROCESS_ROLES: "broker,controller"
           # Listeners remain the same (listening on all interfaces via ":port")
-          KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9092"
+          KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:{{ kafka_external_port }}"
           
           # CRITICAL CHANGE: Internal Advertised Listener now uses 'service1'
-          KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://service1:9092,EXTERNAL://{{ kafka_external_hostname }}:9092"
+          KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://service1:9092,EXTERNAL://{{ kafka_external_hostname }}:{{ kafka_external_port }}"
           
           KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
           KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT"
