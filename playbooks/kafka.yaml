@@ -104,19 +104,13 @@
       # Note: The 'when' condition would be updated or removed for simplicity when looping
 
 
-    - name: List Kafka topics (after topic creation)
+    - name: Final check List all created Kafka topics
       ansible.builtin.command:
-        cmd: "podman exec {{ kafka_container_name }} /{{ kafka_path }}/kafka-topics.sh --list --bootstrap-server localhost:9092"
-      register: topic_list_2
+        cmd: "podman exec {{ kafka_container_name }} /{{ kafka_path }}/kafka-topics.sh --list --bootstrap-server service1:9092"
+      register: final_topic_list
       changed_when: false
-      retries: 5
-      delay: 5
-      until: topic_list_2.rc == 0
-      when: kafka_topic not in topic_list.stdout_lines and kafka_topic not in topic_list.stdout
 
-    - name: Debug Kafka Topics (after topic creation)
+    - name: Debug Final Kafka Topics List
       ansible.builtin.debug:
-        msg:
-          - topic_list.stdout_lines "{{ topic_list.stdout_lines }}"
-          - topic_list.stdout "{{ topic_list.stdout_lines }}"
-      when: kafka_topic not in topic_list.stdout_lines and kafka_topic not in topic_list.stdout
+        var: final_topic_list.stdout_lines
+      
