@@ -28,6 +28,18 @@
         cmd: "podman pull {{ kafka_image }}"
       changed_when: false
 
+    - name: Stop and Remove existing Kafka container
+      ansible.builtin.command:
+        cmd: "podman rm -f {{ kafka_container_name }}"
+      ignore_errors: true
+
+    - name: Remove Existing Kafka data volume for a clean start
+      ansible.builtin.command:
+        cmd: "podman volume rm -f kafka_data"
+      ignore_errors: true # Ignore if the volume doesn't exist
+      # Note: You must remove the volume to truly reset the Kafka state.
+
+
     - name: Create Kafka data volume
       containers.podman.podman_volume:
         name: kafka_data
