@@ -93,17 +93,18 @@
           - topic_list.stdout_lines "{{ topic_list.stdout_lines }}"
           - topic_list.stdout "{{ topic_list.stdout_lines }}"
 
-    - name: Push all required Kafka topics
+    - name: Check if topic exists
       ansible.builtin.command:
-        # Loop over the list of topics
-        cmd: "podman exec {{ kafka_container_name }} /{{ kafka_path }}/kafka-topics.sh --create --topic {{ item }} --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1"
-      register: push_topic
+        cmd: "podman exec {{ kafka_container_name }} /{{ kafka_path }}/kafka-topics.sh --list --bootstrap-server localhost:9092"
+      register: topic_list
       changed_when: false
-      retries: 5
-      delay: 5
-      until: push_topic.rc == 0
-      loop: "{{ kafka_topics }}" # <--- Loop through the list
-      # Note: The 'when' condition would be updated or removed for simplicity when looping
+
+    - name: Create topic if it doesn't exist
+      ansible.builtin.command:
+        cmd: "podman exec {{ kafka_container_name }} /{{ kafka_path }}/kafka-topics.sh --create --topic {{ item }} --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1"
+      when: item not in topic_list.stdout_lines
+      loop: "{{ kafka_topics }}"
+
 
 
     - name: Final check List all created Kafka topics
