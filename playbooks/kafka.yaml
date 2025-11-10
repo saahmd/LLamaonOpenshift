@@ -62,13 +62,18 @@
           KAFKA_NODE_ID: "1"
           KAFKA_PROCESS_ROLES: "broker,controller"
           # Listeners remain the same (listening on all interfaces via ":port")
-          KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:{{ kafka_external_port }}"
+          #KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:{{ kafka_external_port }}"
+          KAFKA_LISTENERS: "CLIENT://:9092,CONTROLLER://:9093"
           
           # CRITICAL CHANGE: Internal Advertised Listener now uses 'service1'
-          KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://service1:9092,EXTERNAL://{{ kafka_external_hostname }}:{{ kafka_external_port }}"
-          
+          #KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://service1:9092,EXTERNAL://{{ kafka_external_hostname }}:{{ kafka_external_port }}"
+          KAFKA_ADVERTISED_LISTENERS: "CLIENT://{{ kafka_external_hostname }}:9092,CONTROLLER://localhost:9093"
           KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
-          KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT"
+          
+          # 3. Use the new CLIENT listener name
+          KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,CLIENT:PLAINTEXT"
+          KAFKA_INTER_BROKER_LISTENER_NAME: "CLIENT" # Set inter-broker to the listener used for clients
+          
           KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
           KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
           KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
