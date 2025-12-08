@@ -68,13 +68,19 @@
       ansible.builtin.debug:
         msg: "{{ turn_response_gpt.content }}"
 
-    - name: Parse turn_response_gpt.content JSON
+    - name: Extract JSON string from turn_response_gpt.content
       ansible.builtin.set_fact:
-        parsed: "{{ turn_response_gpt.content | from_json }}"
+        json_string: "{{ turn_response_gpt.content | regex_replace('^data:\\s*', '') }}"
+
+    - name: Parse JSON
+      ansible.builtin.set_fact:
+        parsed: "{{ json_string | from_json }}"
+
 
     - name: Extract GPT Response
       ansible.builtin.set_fact:
         gpt_response: "{{ parsed.event.payload.turn.output_message.content }}"
+
 
     - name: Display GPT Response
       ansible.builtin.debug:
