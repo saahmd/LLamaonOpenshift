@@ -18,8 +18,8 @@
         run_workflow_template:
           organization: "Default"
           name: "RAN Antenna Configuration Workflow" # Use your actual AAP workflow template name
+          job_args:
+            # Pass the entire raw message body as one variable
+            extra_vars:
+              full_anomaly_report: "{{ event.body }}"
           
-          # Pass the entire raw message body as one variable
-          extra_vars:
-            # The variable 'full_anomaly_report' will contain the entire text you provided.
-            full_anomaly_report: "{{ event.body }}"
