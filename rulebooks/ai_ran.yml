@@ -9,17 +9,9 @@
         topic: ai-ran-logs
 
   rules:
-    - name: RAN Anomaly
-      # The condition remains the same, checking for an actionable event.
-      condition: event.body is search("ACTION REQUIRED")
-      
-      # We skip 'set_facts' and directly use the event variable in the action.
+    - name: Print entire event for inspection
+      # A simple condition that will always trigger, or just trigger on any event
+      condition: event is not none
       action:
-        run_workflow_template:
-          organization: "Default"
-          name: "RAN Antenna Configuration Workflow" # Use your actual AAP workflow template name
-          
-          # Pass the entire raw message body as one variable
-          extra_vars:
-            # The variable 'full_anomaly_report' will contain the entire text you provided.
-            full_anomaly_report: "{{ event.body }}"
+        ansible.eda.debug:
+          msg: "Received Event: {{ event | to_nice_json }}"
