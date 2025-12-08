@@ -16,7 +16,7 @@
             "agent_config": {
              "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 3000},
               "model": "granite-8b-lab-v1",
-              "instructions": "When an anomaly is detected in the logs, extract the API endpoint and every JSON parameter present in the log. Then output ONLY a single fix instruction in one or two lines that tells the user to make a POST request to that endpoint using the full extracted JSON payload, which must be included in the instruction exactly as extracted. The fix instruction may contain multiline JSON inside it. Do not omit or shorten any parameters. Output nothing except this single fix instruction.”,
+              "instructions": "When an anomaly is detected in the logs, extract the API endpoint and every JSON parameter present in the log. Then output ONLY a single fix instruction in one or two lines that tells the user to make a POST request to that endpoint using the full extracted JSON payload, which must be included in the instruction exactly as extracted. The fix instruction may contain multiline JSON inside it. Do not omit or shorten any parameters. Output nothing except this single fix instruction.",
               "enable_session_persistence": false
             }
           }
