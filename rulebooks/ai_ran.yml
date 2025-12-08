@@ -1,0 +1,25 @@
+---
+- name: RAN Antenna Settings Adjustment (Capture Full Entry)
+  hosts: all
+  sources:
+    - name: kafka_ran_logs
+      ansible.eda.kafka:
+        host: service1
+        port: 9092
+        topic: ai-ran-logs
+
+  rules:
+    - name: RAN Anomaly detected
+      # The condition remains the same, checking for an actionable event.
+      condition: event.body.message is search("ACTION REQUIRED")
+      
+      # We skip 'set_facts' and directly use the event variable in the action.
+      action:
+        run_workflow_template:
+          organization: "Default"
+          name: "RAN Antenna Configuration Workflow" # Use your actual AAP workflow template name
+          
+          # Pass the entire raw message body as one variable
+          extra_vars:
+            # The variable 'full_anomaly_report' will contain the entire text you provided.
+            full_anomaly_report: "{{ event.body.message }}"
