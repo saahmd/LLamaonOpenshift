@@ -70,7 +70,7 @@
 
     - name: Extract GPT Response as string
       ansible.builtin.set_fact:
-        gpt_response: "{{ (turn_response_gpt.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1'))[0] }}"
+        gpt_response: "{{ turn_response_gpt.content | regex_search('\"output_message\"[\\s\\S]*?\"content\":\"([\\s\\S]*?)\"', '\\1') }}"
 
     - name: Display GPT Response
       ansible.builtin.debug:
