@@ -82,13 +82,10 @@
       set_fact:
         last_json: "{{ json_clean | regex_findall('({.*})') | last }}"
         
-    - name: Parse last JSON object
-      set_fact:
-        parsed: "{{ last_json | from_json }}"
 
     - name: Extract GPT Response
       ansible.builtin.set_fact:
-        gpt_response: "{{ parsed.event.payload.turn.output_message.content }}"
+        gpt_response: "{{ json_clean.event.payload.turn.output_message.content }}"
 
     - name: Display GPT Response
       ansible.builtin.debug:
