@@ -78,9 +78,13 @@
           {{ json_string[ json_string.find('{') : json_string.rfind('}') + 1 ] }}
 
 
-    - name: Parse JSON again
-      ansible.builtin.set_fact:
-        parsed: "{{ json_clean | from_json }}"
+    - name: Extract last JSON object from json_clean
+      set_fact:
+        last_json: "{{ json_clean | regex_findall('({.*})') | last }}"
+        
+    - name: Parse last JSON object
+      set_fact:
+        parsed: "{{ last_json | from_json }}"
 
     - name: Extract GPT Response
       ansible.builtin.set_fact:
