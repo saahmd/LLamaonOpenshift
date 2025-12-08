@@ -16,7 +16,7 @@
             "agent_config": {
              "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 3000},
               "model": "granite-8b-lab-v1",
-              "instructions": "When an anomaly is detected in the logs, extract the API endpoint and every JSON parameter present in the log.  which must be included in the instruction exactly as extracted. Output only the JSON payload",
+              "instructions": "When an anomaly is detected in the logs, extract the API endpoint and all required JSON parameters (e.g., cell_id, anomaly_type, anomaly_value, threshold_value, action, azimuth_change, downtilt_change). Then generate only one concise fix instruction (1–2 lines) that includes the extracted endpoint and embeds the extracted JSON parameters directly in the instruction, telling the user to make a POST request with this JSON payload. Output only this single fix instruction—no additional text.",
               "enable_session_persistence": false
             }
           }
@@ -70,7 +70,7 @@
 
     - name: Extract GPT Response as string
       ansible.builtin.set_fact:
-        gpt_response: "{{ turn_response_gpt.content | regex_search('\"output_message\"[\\s\\S]*?\"content\":\"([\\s\\S]*?)\"', '\\1') }}"
+        gpt_response: "{{ (turn_response_gpt.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1'))[0] }}"
 
     - name: Display GPT Response
       ansible.builtin.debug:
