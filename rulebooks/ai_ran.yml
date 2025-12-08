@@ -9,9 +9,9 @@
         topic: ai-ran-logs
 
   rules:
-    - name: RAN Anomaly detected
+    - name: RAN Anomaly
       # The condition remains the same, checking for an actionable event.
-      condition: event.body.message is search("ACTION REQUIRED")
+      condition: event.body is search("ACTION REQUIRED")
       
       # We skip 'set_facts' and directly use the event variable in the action.
       action:
@@ -22,4 +22,4 @@
           # Pass the entire raw message body as one variable
           extra_vars:
             # The variable 'full_anomaly_report' will contain the entire text you provided.
-            full_anomaly_report: "{{ event.body.message }}"
+            full_anomaly_report: "{{ event.body }}"
