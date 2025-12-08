@@ -16,7 +16,7 @@
             "agent_config": {
              "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 3000},
               "model": "granite-8b-lab-v1",
-              "instructions": "When an anomaly is detected in the logs, extract the API endpoint and all necessary JSON parameters, then return only a single, concise fix instruction (1–2 lines) telling the user to make a POST request to the extracted endpoint with those parameters.”",
+              "instructions": "When an anomaly is detected in the logs, extract the API endpoint and construct the required JSON payload using all relevant parameters (e.g., cell_id, anomaly_type, anomaly_value, threshold_value, and recommended action values such as azimuth_change and downtilt_change). Then provide a single, concise fix instruction (1–2 lines) stating to make a POST request to the extracted endpoint with the constructed JSON payload. Return only the endpoint, the JSON body, and the concise fix instruction.",
               "enable_session_persistence": false
             }
           }
