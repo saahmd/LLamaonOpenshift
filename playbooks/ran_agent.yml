@@ -70,15 +70,13 @@
 
     - name: Extract JSON string from turn_response_gpt.content
       ansible.builtin.set_fact:
-        json_string: "{{ turn_response_gpt.content | regex_replace('^data:\\s*', '') }}"
+       json_string: "{{ turn_response_gpt.content | regex_replace('^data:\\s*', '') }}"
 
     - name: Parse JSON
       ansible.builtin.set_fact:
-        json_clean: "{{ json_string | regex_findall('({[\\s\\S]*})') }}"
+        json_clean: >-
+          {{ json_string[ json_string.find('{') : json_string.rfind('}') + 1 ] }}
 
-    - name: Parse JSON again
-      ansible.builtin.set_fact:
-        parsed: "{{ json_clean[0] | from_json }}"
 
     - name: Extract GPT Response
       ansible.builtin.set_fact:
