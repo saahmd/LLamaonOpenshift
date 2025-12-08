@@ -80,7 +80,6 @@
 
     - name: Parse JSON again
       ansible.builtin.set_fact:
-        json_clean: >-
           parsed: "{{ json_clean | from_json }}"
 
     - name: Extract GPT Response
