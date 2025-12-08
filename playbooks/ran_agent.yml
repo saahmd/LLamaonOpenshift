@@ -78,10 +78,15 @@
           {{ json_string[ json_string.find('{') : json_string.rfind('}') + 1 ] }}
 
 
+    - name: Parse JSON again
+      ansible.builtin.set_fact:
+        json_clean: >-
+          parsed: "{{ json_clean | from_json }}"
+
     - name: Extract GPT Response
       ansible.builtin.set_fact:
         gpt_response: "{{ parsed.event.payload.turn.output_message.content }}"
-        
+
     - name: Display GPT Response
       ansible.builtin.debug:
         msg: "{{ gpt_response }}"
