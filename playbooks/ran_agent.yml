@@ -74,13 +74,15 @@
 
     - name: Parse JSON
       ansible.builtin.set_fact:
-        parsed: "{{ json_string | from_json }}"
+        json_clean: "{{ json_string | regex_search('({.*})', '\\1', multiline=True) }}"
 
+    - name: Parse JSON again
+      ansible.builtin.set_fact:
+        parsed: "{{ json_clean | from_json }}"
 
     - name: Extract GPT Response
       ansible.builtin.set_fact:
         gpt_response: "{{ parsed.event.payload.turn.output_message.content }}"
-
 
     - name: Display GPT Response
       ansible.builtin.debug:
