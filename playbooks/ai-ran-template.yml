@@ -1,0 +1,19 @@
+---
+- name: Log Full Anomaly Report
+  hosts: localhost # Use localhost since you are only printing information
+  gather_facts: false
+  
+  tasks:
+    - name: Print the received full_anomaly_report variable
+      ansible.builtin.debug:
+        msg: |
+          --- ANOMALY REPORT RECEIVED ---
+          {{ full_anomaly_report }}
+          -------------------------------
+      # The 'full_anomaly_report' variable is automatically available here
+      # because it was passed as an extra_var from EDA to the Workflow, 
+      # and from the Workflow to this Job Template.
+
+    # Add subsequent tasks here, like parsing the report and calling the API
+    # - name: Run the main antenna adjustment logic...
+    #   ...
