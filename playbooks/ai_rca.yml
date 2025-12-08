@@ -1,0 +1,80 @@
+---
+- name: Agent → Session → LLM Turn (Python streaming)
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Create agent for RCA
+      uri:
+        url: "https://{{ llama_stack_url }}/v1/agents"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body: |
+         {
+            "agent_config": {
+             "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 3000},
+              "model": "granite-8b-lab-v1",
+              "instructions": "When an anomaly is detected in the logs, extract the API endpoint and all necessary JSON parameters, then return only a single, concise fix instruction (1–2 lines) telling the user to make a POST request to the extracted endpoint with those parameters.”",
+              "enable_session_persistence": false
+            }
+          }
+        body_format: json
+        return_content: yes
+        validate_certs: no
+      register: agent_response
+
+    - name: Create session
+      uri:
+        url: "https://{{ llama_stack_url }}/v1/agents/{{ agent_response.json.agent_id }}/session"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body: '{"session_name": "string"}'
+        body_format: json
+        return_content: yes
+        validate_certs: no
+      register: session_response
+
+    - name: Create turn
+      uri:
+        url: "https://{{ llama_stack_url }}/v1/agents/{{ agent_response.json.agent_id }}/session/{{ session_response.json.session_id }}/turn"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body: |
+          {
+            "messages": [
+              {
+                "role": "user",
+                "content": "{{ gpt_prompt | default('What is the capital of the USA?') }}",
+                "context": "string"
+              }
+            ],
+            "stream": true,
+            "tool_config": {
+              "tool_choice": "auto"
+            }
+          }
+        body_format: json
+        return_content: yes
+        validate_certs: no
+      register: turn_response_gpt
+
+    - name: Display Turn response
+      ansible.builtin.debug:
+        msg: "{{ turn_response_gpt.content }}"
+
+    - name: Extract GPT Response as string
+      ansible.builtin.set_fact:
+        gpt_response: "{{ (turn_response_gpt.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1'))[0] }}"
+
+    - name: Display GPT Response
+      ansible.builtin.debug:
+        msg: "{{ gpt_response }}"
+
+
+   
