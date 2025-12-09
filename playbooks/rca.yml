@@ -15,7 +15,7 @@
          {
             "agent_config": {
              "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 3000},
-              "model": "granite-8b-lab-v1",
+              "model": "qwen-8b",
               "instructions": "A system service is failing on node1. Based on the logs, Provide a single, concise fix instruction (1-2 lines), make sure to add restart of {{ linux_service }} service.",
               "enable_session_persistence": false
             }
@@ -24,7 +24,7 @@
         return_content: yes
         validate_certs: no
       register: agent_response
-
+  # "model": "granite-8b-lab-v1",
     - name: Create session
       uri:
         url: "https://{{ llama_stack_url }}/v1/agents/{{ agent_response.json.agent_id }}/session"
