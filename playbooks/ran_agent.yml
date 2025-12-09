@@ -91,13 +91,10 @@
       ansible.builtin.debug:
         msg: "{{ gpt_response }}"
 
-    #- name: Extract GPT Response as string
-    #  ansible.builtin.set_fact:
-    #    gpt_response: "{{ (turn_response_gpt.content | regex_search('\"output_message\".*?\"content\":\"([^\"]+)\"', '\\1'))[0] }}"
-
-    #- name: Display GPT Response
-    #  ansible.builtin.debug:
-    #    msg: "{{ gpt_response }}"
+    - name: Set stats for next controller job
+      ansible.builtin.set_stats:
+        data:
+          gpt_response: "{{ gpt_response }}"
 
 
    
