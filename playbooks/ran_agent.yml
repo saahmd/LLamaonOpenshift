@@ -11,16 +11,26 @@
         headers:
           Content-Type: "application/json"
           Accept: "application/json"
-        body: |
-         {
-            "agent_config": {
-             "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 3000},
-              "model": "granite-8b-lab-v1",
-              "instructions": "When an anomaly is detected in the logs, extract the API endpoint and all required JSON parameters (e.g., cell_id, anomaly_type, anomaly_value, threshold_value, action, azimuth_change, downtilt_change). Then generate only one concise fix instruction (1–2 lines) that includes the extracted endpoint and embeds the extracted JSON parameters directly in the instruction, telling the user to make a POST request with this JSON payload. Output only this single fix instruction—no additional text.",
-              "enable_session_persistence": false
-            }
-          }
         body_format: json
+        body:
+          agent_config:
+            sampling_params:
+              strategy:
+                type: "greedy"
+              max_tokens: 512
+            model: "granite-8b-lab-v1"
+            instructions: >
+              \n###Based on the logs:
+
+              1. Extract the API endpoint from the log.
+              2. Extract all JSON parameters from the log (e.g., cell_id, anomaly_type, anomaly_value, threshold_value, action, azimuth_change, downtilt_change).
+              3. Output only one single-line fix instruction in the following exact format:
+
+              Make a POST request to <endpoint> with JSON key-value payload where keys and values are <key1>: <value1>, <key2>: <value2>, ...
+
+              4. Replace <endpoint> and all key-value pairs with the extracted values.
+              5. Do not output any additional text, explanations, or formatting.
+                      
         return_content: yes
         validate_certs: no
       register: agent_response
