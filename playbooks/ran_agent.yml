@@ -55,21 +55,17 @@
         headers:
           Content-Type: "application/json"
           Accept: "application/json"
-        body: |
-          {
-            "messages": [
-              {
-                "role": "user",
-                "content": "{{ full_anomaly_report | default('What is the capital of the USA?') }}",
-                "context": "string"
-              }
-            ],
-            "stream": true,
-            "tool_config": {
-              "tool_choice": "auto"
-            }
-          }
         body_format: json
+        body:
+          messages:
+            - role: "user"
+              content: "{{ full_anomaly_report | default('What is the capital of the USA?') }}"
+              # Only keep "context" if the Llama Stack API specifically requires it; 
+              # otherwise, it's safer to omit it if it's just a placeholder "string".
+              context: "string" 
+          stream: true
+          tool_config:
+            tool_choice: "auto"
         return_content: yes
         validate_certs: no
       register: turn_response_gpt
