@@ -12,9 +12,6 @@
         msg: "Slack Instance must be set!"
       when: slack_token | default('') | trim == ''
 
-    - name: Set systemd facts
-      ansible.builtin.set_fact:
-        linux_service: "{{ input_linux_service | default('httpd') }}"
 
     - name: Send error notification message via Slack
       community.general.slack:
@@ -22,16 +19,15 @@
         attachments:
           - text: "!!!!!! ALERT !!!!!!"
             color: "#ff00dd"
-            title: "{{ linux_service | capitalize }} error detected"
+            title: "Anomaly Detected"
             fields:
               - title: Issue
-                value: "{{ linux_service | capitalize }} error detected"
+                value: "{{ Anomaly | capitalize }} Anomaly Detected"
                 short: true
               - title: Details
-                value: "{{ slack_message }}"
+                value: "{{ full_anomaly_report }}"
                 short: true
-      delegate_to: localhost
-      when: (slack_message | default('') | length) > 0
+      
 
     - name: Send RCA insights from RHEL AI to Mattermost
       community.general.slack:
@@ -48,20 +44,6 @@
                 value: "{{ rca_response[0] | default('No RCA available') }}"
                 short: true
       
-    - name: Send Decision Response to Slack
-      community.general.slack:
-        token: "{{ slack_token }}"
-        attachments:
-          - text: "!!!!!! Agent Action Response !!!!!!"
-            color: "#1e00ffff"
-            title: "{{ linux_service | capitalize }} Decision Response"
-            fields:
-              - title: RCA of {{ linux_service | capitalize }} error detected
-                value: "Decision taken by Agent"
-                short: true
-              - title: Details
-                value: "{{ decision_response[0] | default('N/A') }}"
-                short: true
      
 
     
