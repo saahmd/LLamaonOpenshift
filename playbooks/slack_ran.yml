@@ -22,7 +22,7 @@
             title: "Anomaly Detected"
             fields:
               - title: Issue
-                value: "{{ Anomaly | capitalize }} Anomaly Detected"
+                value: "Anomaly Detected"
                 short: true
               - title: Details
                 value: "{{ full_anomaly_report }}"
