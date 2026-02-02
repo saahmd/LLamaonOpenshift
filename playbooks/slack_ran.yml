@@ -35,13 +35,13 @@
         attachments:
           - text: "!!!!!! RCA INSIGHT !!!!!!"
             color: "#ffa500"
-            title: "{{ linux_service | capitalize }} Root Cause Identified"
+            title: "Root Cause Identified"
             fields:
-              - title: RCA of {{ linux_service | capitalize }} error detected
+              - title: RCA of Anomaly 
                 value: "AI-Generated Explanation"
                 short: true
               - title: Details
-                value: "{{ rca_response[0] | default('No RCA available') }}"
+                value: "{{ gpt_response | default('No RCA available') }}"
                 short: true
       
      
