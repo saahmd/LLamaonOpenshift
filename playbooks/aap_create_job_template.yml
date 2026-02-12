@@ -30,7 +30,7 @@
         credentials:
           - "{{ input_credential | default('AAP') }}"
           - "{{ vault_credential | default('ansible-vault') }}"
-        validate_certs: true
+        validate_certs: false
         execution_environment: "Default execution environment"
 
         
