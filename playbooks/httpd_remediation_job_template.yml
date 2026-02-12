@@ -25,7 +25,7 @@
         project: "{{ input_project | default('Lightspeed-Playbooks') }}"
         playbook: "{{ input_playbook | default('lightspeed-response.yml') }}"
         credential: "{{ input_credential | default('lab-credential') }}"
-        validate_certs: true
+        validate_certs: false
         execution_environment: "Default execution environment"
         become_enabled: true
         ask_limit_on_launch: true
