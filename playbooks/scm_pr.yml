@@ -18,8 +18,7 @@
           duplicate_detection: false
           name: main
         origin:
-          #url: "{{ github_url }}"
-          url: git@github.com:saahmd/lightspeed_playbooks.git
+          url: "{{ github_url }}"
           token: "{{ github_token }}"
       environment:
         GIT_SSL_NO_VERIFY: "true"
