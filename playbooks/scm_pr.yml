@@ -18,7 +18,8 @@
           duplicate_detection: false
           name: main
         origin:
-          url: "{{ github_url }}"
+          #url: "{{ github_url }}"
+          url: git@github.com:saahmd/lightspeed_playbooks.git
           token: "{{ github_token }}"
       environment:
         GIT_SSL_NO_VERIFY: "true"
@@ -63,10 +64,6 @@
         dest: "{{ repository['path'] }}/lightspeed-response.yml"
         mode: '0644'
 
-    - name: Commit and push final version of playbook to GitHub
+    - name: Publish the changes
       ansible.scm.git_publish:
         path: "{{ repository['path'] }}"
-        token: "{{ github_token }}"
-        user:
-          name: "{{ github_username }}"
-        include: ["*"]       # commit all files
