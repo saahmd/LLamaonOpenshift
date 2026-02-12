@@ -1,0 +1,66 @@
+- name: Create lightspeed_playbooks repository on Gitea
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+    - name: Set input variables for repository
+      ansible.builtin.set_fact:
+        repo_name: "{{ input_repo_name | default('lightspeed_playbooks') }}"
+        repo_description: "{{ input_repo_description | default('Repository for Lightspeed Ansible Playbooks') }}"
+
+    - name: Retrieve existing repository or initialize it locally
+      ansible.scm.git_retrieve:
+        branch:
+          duplicate_detection: false
+          name: main
+        origin:
+          url: "{{ gitea_url }}/lab-user/{{ repo_name }}.git"
+          token: "{{ gitea_token }}"
+      environment:
+        GIT_SSL_NO_VERIFY: "true"
+      register: repository
+
+    #########################################################################
+    # Safety guard - Ensure AI-generated playbook works with lab inventory #
+    #########################################################################
+
+    - name: Ensure execution readiness for AI-generated playbook
+      block:
+
+        - name: Parse Lightspeed playbook into structured data
+          ansible.builtin.set_fact:
+            parsed_playbook: "{{ lightspeed_playbook | from_yaml }}"
+
+        - name: Check if 'hosts' value needs to be standardized
+          ansible.builtin.set_fact:
+            modify_hosts: "{{ parsed_playbook[0]['hosts'] not in ['all', 'node1'] }}"
+
+        - name: Normalize 'hosts' to 'all' if needed
+          ansible.builtin.set_fact:
+            parsed_playbook: "{{ parsed_playbook | map('combine', {'hosts': 'all'}) | list }}"
+          when: modify_hosts
+
+        - name: Convert structured data back to YAML (preserve formatting)
+          ansible.builtin.set_fact:
+            lightspeed_playbook_parsed: "{{ parsed_playbook | to_nice_yaml(indent=2, sort_keys=False) }}"
+
+        - name: Update stats with final playbook content
+          ansible.builtin.set_stats:
+            data:
+              lightspeed_playbook_parsed: "{{ lightspeed_playbook_parsed }}"
+
+      tags: preflight
+
+    #########################################################################
+
+    - name: Save parsed Lightspeed playbook to YAML file
+      ansible.builtin.copy:
+        content: "{{ lightspeed_playbook_parsed }}"
+        dest: "{{ repository['path'] }}/lightspeed-response.yml"
+        mode: '0644'
+
+    - name: Commit and push final version of playbook to Gitea
+      ansible.scm.git_publish:
+        path: "{{ repository['path'] }}"
+        token: "{{ gitea_token }}"
