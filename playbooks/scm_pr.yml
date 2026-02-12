@@ -9,6 +9,9 @@
         repo_name: "{{ input_repo_name | default('lightspeed_playbooks') }}"
         repo_description: "{{ input_repo_description | default('Repository for Lightspeed Ansible Playbooks') }}"
 
+    - name: Disable git SSL verification (lab only)
+      ansible.builtin.command: git config --global http.sslVerify false
+      
     - name: Retrieve existing repository or initialize it locally
       ansible.scm.git_retrieve:
         branch:
