@@ -70,4 +70,3 @@
         user:
           name: "{{ github_username }}"
         include: ["*"]       # commit all files
-        msg: "Updates made by Ansible"
