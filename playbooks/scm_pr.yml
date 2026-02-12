@@ -63,7 +63,9 @@
         dest: "{{ repository['path'] }}/lightspeed-response.yml"
         mode: '0644'
 
-    - name: Commit and push final version of playbook to Gitea
+    - name: Commit and push final version of playbook to GitHub
       ansible.scm.git_publish:
         path: "{{ repository['path'] }}"
-        token: "{{ gitea_token }}"
+        remote: "https://github.com/{{ github_username }}/{{ repository_name }}.git"
+        token: "{{ github_token }}"
+        msg: "Updates made by Ansible"
