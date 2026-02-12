@@ -63,9 +63,17 @@
         dest: "{{ repository['path'] }}/lightspeed-response.yml"
         mode: '0644'
 
+    - name: Set authenticated remote URL
+      command: >
+        git -C {{ repository['path'] }}
+        remote set-url origin
+        https://{{ github_username }}:{{ github_token }}@github.com/{{ github_username }}/lightspeed_playbooks.git
+        
     - name: Publish the changes
       ansible.scm.git_publish:
         path: "{{ repository['path'] }}"
         user:
           name: "{{ github_username }}"
           email: "{{ github_email }}"
+        include:
+          - "*"
