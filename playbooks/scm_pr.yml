@@ -18,8 +18,8 @@
           duplicate_detection: false
           name: main
         origin:
-          url: "{{ gitea_url }}"
-          token: "{{ gitea_token }}"
+          url: "{{ github_url }}"
+          token: "{{ github_token }}"
       environment:
         GIT_SSL_NO_VERIFY: "true"
       register: repository
