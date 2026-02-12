@@ -68,3 +68,4 @@
         path: "{{ repository['path'] }}"
         user:
           name: "{{ github_username }}"
+          email: "{{ github_email }}"
