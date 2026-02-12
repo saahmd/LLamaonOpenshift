@@ -68,6 +68,5 @@
         path: "{{ repository['path'] }}"
         token: "{{ github_token }}"
         user: "{{ github_username }}"
-        commit: yes          # or commit: "yes" (string)
         include: ["*"]       # commit all files
         msg: "Updates made by Ansible"
