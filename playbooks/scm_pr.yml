@@ -18,7 +18,7 @@
           duplicate_detection: false
           name: main
         origin:
-          url: "{{ gitea_url }}/lab-user/{{ repo_name }}.git"
+          url: "{{ gitea_url }}"
           token: "{{ gitea_token }}"
       environment:
         GIT_SSL_NO_VERIFY: "true"
