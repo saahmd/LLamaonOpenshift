@@ -65,7 +65,8 @@
 
     - name: Commit and push final version of playbook to GitHub
       ansible.scm.git_publish:
-        path: "{{ repository['path'] }}"
-        remote: "https://github.com/{{ github_username }}/{{ repository_name }}.git"
-        token: "{{ github_token }}"
-        msg: "Updates made by Ansible"
+        path: "{{ repository['path'] }}"      # local repo path
+        token: "{{ github_token }}"           # GitHub PAT
+        user: "{{ github_username }}"         # optional, defaults to git config
+        commit: yes                           # commit changes
+        msg: "Updates made by Ansible"        # commit message
