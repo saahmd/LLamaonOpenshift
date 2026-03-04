@@ -1,6 +1,6 @@
 ---
 - name: Retrieve additional info for AI
-  hosts: all
+  hosts: node1
   become: true
   gather_facts: false
   tasks:
