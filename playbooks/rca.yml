@@ -15,7 +15,7 @@
          {
             "agent_config": {
              "sampling_params": {"strategy": {"type": "greedy"}, "max_tokens": 3000},
-              "model": "granite-8b-lab-v1",
+              "model": "qwen3-8b",
               "instructions": "A system service is failing on node1. Based on the logs, Provide a single, concise fix instruction (1-2 lines), make sure to add restart of {{ linux_service }} service.",
               "enable_session_persistence": false
             }
@@ -128,7 +128,8 @@
               - "mcp::aap"
             tool_config:
               tool_choice: "auto"
-            model: "llama-3-2-3b"
+            #model: "llama-3-2-3b"
+            model: "qwen3-8b"
             instructions: >
               \n### You are a helpful assistant responsible for identifying the most relevant Ansible job template based on incoming log data.\n
 
