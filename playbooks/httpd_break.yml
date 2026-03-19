@@ -10,13 +10,23 @@
         line: 'InvalidDirectiveHere'
         state: present
  
-    - name: Restart Apache to apply bad config
+    - name: Kill httpd processes
       ansible.builtin.command:
-        cmd: httpd -k restart
-      register: httpd_restart_result
+        cmd: pkill -9 httpd
       ignore_errors: true
  
-    - name: Verify Apache is broken
+    - name: Wait for httpd to fully stop
+      ansible.builtin.pause:
+        seconds: 3
+ 
+    - name: Attempt to start httpd with broken config
+      ansible.builtin.command:
+        cmd: httpd -D FOREGROUND
+      async: 5
+      poll: 0
+      ignore_errors: true
+ 
+    - name: Verify Apache config is broken
       ansible.builtin.command:
         cmd: httpd -t
       register: httpd_config_test
@@ -26,4 +36,3 @@
     - name: Show config error
       ansible.builtin.debug:
         msg: "{{ httpd_config_test.stderr }}"
- 
