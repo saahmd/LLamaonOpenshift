@@ -1,0 +1,29 @@
+---
+- name: Break Apache by adding invalid directive
+  hosts: all
+  become: true
+  tasks:
+    - name: Add InvalidDirectiveHere to httpd config
+      ansible.builtin.lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        insertafter: '^ServerRoot'
+        line: 'InvalidDirectiveHere'
+        state: present
+ 
+    - name: Restart Apache to apply bad config
+      ansible.builtin.command:
+        cmd: httpd -k restart
+      register: httpd_restart_result
+      ignore_errors: true
+ 
+    - name: Verify Apache is broken
+      ansible.builtin.command:
+        cmd: httpd -t
+      register: httpd_config_test
+      failed_when: httpd_config_test.rc == 0
+      changed_when: false
+ 
+    - name: Show config error
+      ansible.builtin.debug:
+        msg: "{{ httpd_config_test.stderr }}"
+ 
