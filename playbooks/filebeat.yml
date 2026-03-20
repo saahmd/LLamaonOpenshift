@@ -1,0 +1,89 @@
+---
+- name: Install and configure Filebeat to ship httpd logs to Kafka
+  hosts: all
+  become: true
+  vars:
+    kafka_topic: "httpd-error-logs"
+    kafka_host: "localhost:9092"
+    httpd_error_log: "/var/log/httpd/error_log"
+
+  tasks:
+    - name: Import Elastic GPG key
+      ansible.builtin.rpm_key:
+        key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+
+    - name: Add Elastic yum repository
+      ansible.builtin.yum_repository:
+        name: elastic-8.x
+        description: Elastic repository for 8.x packages
+        baseurl: https://artifacts.elastic.co/packages/8.x/yum
+        gpgcheck: true
+        gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        enabled: true
+
+    - name: Install Filebeat
+      ansible.builtin.package:
+        name: filebeat
+        state: present
+
+    - name: Deploy Filebeat configuration
+      ansible.builtin.copy:
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          filebeat.inputs:
+            - type: log
+              enabled: true
+              paths:
+                - {{ httpd_error_log }}
+              fields:
+                log_type: httpd-error
+              fields_under_root: true
+
+          output.kafka:
+            hosts: ["{{ kafka_host }}"]
+            topic: "{{ kafka_topic }}"
+            partition.round_robin:
+              reachable_only: false
+            required_acks: 1
+            compression: gzip
+            max_message_bytes: 1000000
+
+          logging.level: info
+          logging.to_files: true
+          logging.files:
+            path: /var/log/filebeat
+            name: filebeat
+            keepfiles: 7
+      notify: Restart Filebeat
+
+    - name: Fix SELinux context on httpd error log (RHEL)
+      ansible.builtin.command:
+        cmd: "chcon -t var_log_t {{ httpd_error_log }}"
+      changed_when: false
+      failed_when: false
+
+    - name: Enable and start Filebeat
+      ansible.builtin.systemd:
+        name: filebeat
+        enabled: true
+        state: started
+
+    - name: Verify Filebeat is running
+      ansible.builtin.command:
+        cmd: systemctl is-active filebeat
+      register: filebeat_status
+      changed_when: false
+
+    - name: Show Filebeat status
+      ansible.builtin.debug:
+        msg: "Filebeat is {{ filebeat_status.stdout }}"
+
+  handlers:
+    - name: Restart Filebeat
+      ansible.builtin.systemd:
+        name: filebeat
+        state: restarted
