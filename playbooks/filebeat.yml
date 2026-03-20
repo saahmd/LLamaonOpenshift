@@ -43,6 +43,15 @@
                 log_type: httpd-error
               fields_under_root: true
 
+            - type: journald
+              enabled: true
+              id: journald-httpd
+              units:
+                - httpd.service
+              fields:
+                log_type: httpd-journald
+              fields_under_root: true
+              
           output.kafka:
             hosts: ["{{ kafka_host }}"]
             topic: "{{ kafka_topic }}"
