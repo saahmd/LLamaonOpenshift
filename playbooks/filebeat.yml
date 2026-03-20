@@ -43,7 +43,10 @@
                 type: apache_httpd
               fields_under_root: true
               scan_frequency: 10s
-              
+
+          processors:
+            - add_host_metadata: ~
+            
           output.kafka:
             hosts: ["{{ kafka_host }}"]
             topic: "{{ kafka_topic }}"
