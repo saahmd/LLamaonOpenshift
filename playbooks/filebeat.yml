@@ -38,19 +38,11 @@
             - type: log
               enabled: true
               paths:
-                - {{ httpd_error_log }}
+                - /var/log/httpd/error_log
               fields:
-                log_type: httpd-error
+                type: apache_httpd
               fields_under_root: true
-
-            - type: journald
-              enabled: true
-              id: journald-httpd
-              units:
-                - httpd.service
-              fields:
-                log_type: httpd-journald
-              fields_under_root: true
+              scan_frequency: 10s
               
           output.kafka:
             hosts: ["{{ kafka_host }}"]
