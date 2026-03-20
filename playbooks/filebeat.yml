@@ -48,10 +48,10 @@
             - add_host_metadata: ~
             
           output.kafka:
-            hosts: ["{{ kafka_host }}"]
-            topic: "{{ kafka_topic }}"
-            partition.round_robin:
-              reachable_only: false
+            hosts: ["localhost:9092"]
+            topic: "httpd-error-logs"
+            codec.json:
+              pretty: false
             required_acks: 1
             compression: gzip
             max_message_bytes: 1000000
