@@ -5,8 +5,6 @@
   vars:
     kafka_container_name: cp-kafka
     kafka_image: "docker.io/apache/kafka"
-    kafka_port: 9092
-    kafka_controller_port: 9093
     kafka_path: "/opt/kafka/bin"
     kafka_topic: "httpd-error-logs"
 
@@ -23,18 +21,6 @@
         cmd: "podman pull {{ kafka_image }}"
       changed_when: false
 
-
-    - name: Stop and Remove existing Kafka container
-      ansible.builtin.command:
-        cmd: "podman rm -f {{ kafka_container_name }}"
-      ignore_errors: true
-
-    - name: Remove Existing Kafka data volume for a clean start
-      ansible.builtin.command:
-        cmd: "podman volume rm -f kafka_data"
-      ignore_errors: true # Ignore if the volume doesn't exist
-      # Note: You must remove the volume to truly reset the Kafka state.
-      
     - name: Create Kafka data volume
       containers.podman.podman_volume:
         name: kafka_data
@@ -45,20 +31,19 @@
         image: "{{ kafka_image }}"
         hostname: "{{ kafka_container_name }}"
         state: started
+        recreate: true
         restart_policy: always
         memory: 2g
-        ports:
-          - "9092:9092"
-          - "9093:9093"
+        network: host                               # ← shares host network, no port mapping needed
+        volumes:
+          - "kafka_data:/var/lib/kafka/data"
         env:
           KAFKA_NODE_ID: "1"
           KAFKA_PROCESS_ROLES: "broker,controller"
           KAFKA_LISTENERS: "CLIENT://:9092,CONTROLLER://:9093"
-          KAFKA_ADVERTISED_LISTENERS: "CLIENT://{{ kafka_external_hostname }}:9092"
+          KAFKA_ADVERTISED_LISTENERS: "CLIENT://{{ kafka_external_hostname }}:9092"  # ← single listener on 9092
           KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
-
-          KAFKA_INTER_BROKER_LISTENER_NAME: "CLIENT" # Set inter-broker to the listener used for clients
-          
+          KAFKA_INTER_BROKER_LISTENER_NAME: "CLIENT"
           KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,CLIENT:PLAINTEXT"
           KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
           KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
@@ -67,45 +52,57 @@
           KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
           KAFKA_NUM_PARTITIONS: "3"
 
-   ## Some tests below to list out topics, and create a test-topic if nothing exists
+    - name: Wait for Kafka to be ready
+      ansible.builtin.wait_for:
+        host: localhost
+        port: 9092
+        delay: 5
+        timeout: 60
+
     - name: List Kafka topics
       ansible.builtin.command:
-        cmd: "podman exec {{ kafka_container_name }} /{{ kafka_path }}/kafka-topics.sh --list --bootstrap-server localhost:9092"
+        cmd: "podman exec {{ kafka_container_name }} {{ kafka_path }}/kafka-topics.sh --list --bootstrap-server localhost:9092"
       register: topic_list
       changed_when: false
       retries: 5
       delay: 5
       until: topic_list.rc == 0
 
-    - name: Debug Kafka Topics
+    - name: Debug Kafka topics before creation
       ansible.builtin.debug:
-        msg:
-          - topic_list.stdout_lines "{{ topic_list.stdout_lines }}"
-          - topic_list.stdout "{{ topic_list.stdout_lines }}"
+        msg: "Topics found: {{ topic_list.stdout_lines }}"
 
-    - name: Push a Kafka topic
+    - name: Create Kafka topic if it does not exist
       ansible.builtin.command:
-        cmd: "podman exec {{ kafka_container_name }} /{{ kafka_path }}/kafka-topics.sh --create --topic {{ kafka_topic }} --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1"
+        cmd: >
+          podman exec {{ kafka_container_name }} {{ kafka_path }}/kafka-topics.sh
+          --create
+          --topic {{ kafka_topic }}
+          --bootstrap-server localhost:9092
+          --partitions 3
+          --replication-factor 1
       register: push_topic
-      changed_when: false
+      changed_when: "'Created topic' in push_topic.stdout"
       retries: 5
       delay: 5
       until: push_topic.rc == 0
-      when: kafka_topic not in topic_list.stdout_lines and kafka_topic not in topic_list.stdout
+      when: kafka_topic not in topic_list.stdout_lines
 
-    - name: List Kafka topics
+    - name: List Kafka topics after creation
       ansible.builtin.command:
-        cmd: "podman exec {{ kafka_container_name }} /{{ kafka_path }}/kafka-topics.sh --list --bootstrap-server localhost:9092"
-      register: topic_list_2
+        cmd: "podman exec {{ kafka_container_name }} {{ kafka_path }}/kafka-topics.sh --list --bootstrap-server localhost:9092"
+      register: topic_list_final
       changed_when: false
-      retries: 5
-      delay: 5
-      until: topic_list_2.rc == 0
-      when: kafka_topic not in topic_list.stdout_lines and kafka_topic not in topic_list.stdout
 
-    - name: Debug Kafka Topics
+    - name: Debug Kafka topics after creation
       ansible.builtin.debug:
-        msg:
-          - topic_list.stdout_lines "{{ topic_list.stdout_lines }}"
-          - topic_list.stdout "{{ topic_list.stdout_lines }}"
-      when: kafka_topic not in topic_list.stdout_lines and kafka_topic not in topic_list.stdout
+        msg: "Topics after setup: {{ topic_list_final.stdout_lines }}"
+
+    - name: Restrict controller port from external access
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "9093"
+        source: "! 127.0.0.1"
+        jump: DROP
+
