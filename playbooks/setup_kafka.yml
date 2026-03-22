@@ -16,6 +16,7 @@
         name:
           - podman
           - python3-podman
+          - python3-firewall 
         state: present
 
     - name: Pull Kafka image
