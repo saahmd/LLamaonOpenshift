@@ -3,7 +3,7 @@
   hosts: all
   sources:
    - ansible.eda.kafka:
-       host: rhel9.5w7sj.internal
+       host: 192.168.0.103
        port: 9092
        topic: httpd-error-logs
 
