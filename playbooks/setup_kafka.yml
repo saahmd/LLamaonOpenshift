@@ -28,12 +28,6 @@
       containers.podman.podman_volume:
         name: kafka_data
 
-    - name: Open Kafka port in firewalld        
-      ansible.posix.firewalld:
-        port: "{{ kafka_port }}/tcp"
-        permanent: true
-        state: enabled
-        immediate: true
 
     - name: Start Apache Kafka container
       containers.podman.podman_container:
