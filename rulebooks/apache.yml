@@ -1,20 +1,22 @@
+---
 - name: Web app issue
   hosts: all
   sources:
-    - ansible.eda.url_check:
-        urls:
-          - http://node1-svc.aap-demo.svc.cluster.local:80
-        delay: 10        # poll every 10 seconds
+   - ansible.eda.kafka:
+       host: localhost
+       port: 9092
+       topic: httpd-error-logs
+
   rules:
-    - name: Apache is down
-      condition: event.url_check.status == "down"
+    - name: apache shutdown detected
+      condition: event.body.message is search("shutting down")
       action:
         run_workflow_template:
           organization: "Default"
           name: "{{ workflow_template_name | default('AI Insights and Lightspeed prompt generation') }}"
 
-    - name: Apache is back up
-      condition: event.url_check.status == "up"
+    - name: show event messages
+      condition: event.body.message is defined
       action:
         debug:
-          msg: "Apache is back up on {{ event.url_check.url }}"
+          msg: "{{ event.body.message }}"
