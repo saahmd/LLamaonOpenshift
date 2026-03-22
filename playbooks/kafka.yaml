@@ -11,7 +11,7 @@
     kafka_external_port: 9094 # <-- New port for external clients
     # CRITICAL: Replace with your actual public hostname or IP
     kafka_path: "/opt/kafka/bin/"
-    kafka_external_hostname: "localhost" 
+    
     kafka_topics:
       - "httpd-error-logs"
       - "ai-ran-logs"
