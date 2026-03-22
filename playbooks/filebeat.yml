@@ -70,6 +70,23 @@
       changed_when: false
       failed_when: false
 
+    - name: Stop Filebeat before registry cleanup
+      ansible.builtin.systemd:
+        name: filebeat
+        state: stopped
+      ignore_errors: true
+
+    - name: Clear Filebeat registry for fresh start
+      ansible.builtin.file:
+        path: /var/lib/filebeat/registry
+        state: absent
+
+    - name: Truncate httpd error log for fresh start
+      ansible.builtin.command:
+        cmd: truncate -s 0 /var/log/httpd/error_log
+      changed_when: false
+
+      
     - name: Enable and start Filebeat
       ansible.builtin.systemd:
         name: filebeat
