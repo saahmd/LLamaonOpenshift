@@ -6,7 +6,8 @@
   tasks:
     - name: Create agent for RCA
       uri:
-        url: "https://{{ llama_stack_url }}/v1/agents"
+        #url: "https://{{ llama_stack_url }}/v1/agents"
+        url: "http://{{ llama_stack_url }}/v1/agents"
         method: POST
         headers:
           Content-Type: "application/json"
