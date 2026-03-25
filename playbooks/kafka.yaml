@@ -88,9 +88,12 @@
         
     - name: Create topics 
       ansible.builtin.command:
-        cmd: "podman exec {{ kafka_container_name }} {{ kafka_path }}/kafka-topics.sh --create --topic {{ item }} --bootstrap-server localhost:9092 --if-not-exists --partitions 1 --replication-factor 1"
+        cmd: "podman exec {{ kafka_container_name }} {{ kafka_path }}/kafka-topics.sh --create --topic {{ item }} --bootstrap-server cp-kafka:9092 --if-not-exists --partitions 1 --replication-factor 1"
       loop: "{{ kafka_topics }}"
-      changed_when: true
+      register: create_results
+      until: create_results.rc == 0
+      retries: 5        # If it still fails, retry 5 times
+      delay: 5          # Wait 5 seconds
 
 
     - name: Final check List all created Kafka topics
