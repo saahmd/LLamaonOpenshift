@@ -75,9 +75,16 @@
 
     # The following tasks use the internal bootstrap server address (localhost:9092) 
     # which is generally preferred for commands run inside the container.
-    - name: Wait for Kafka to initialize
+    - name: Wait for Kafka port to be open
+      ansible.builtin.wait_for:
+        port: 9092
+        delay: 5        # Wait 5 seconds before first check
+        timeout: 60     # Give it up to a minute to boot
+        state: started
+
+    - name: Settle delay for KRaft Quorum
       ansible.builtin.pause:
-        seconds: 15
+        seconds: 15     # KRaft needs a moment to elect a leader after the port opens
         
     - name: Create topics 
       ansible.builtin.command:
