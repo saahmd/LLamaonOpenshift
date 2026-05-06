@@ -3,7 +3,44 @@
   hosts: localhost
   gather_facts: false
   vars:
-    lightspeed_custom_prompt: "Generate a production-ready Ansible playbook for the following task: {goal}"
+    lightspeed_instructions: !unsafe |
+      INSTRUCTIONS:
+ 
+      You are an Ansible playbook generator for OpenShift-based IMS remediation.
+      Produce a playbook that resolves the issue described in the incident
+      details below. Return raw YAML starting with ---. No markdown fences,
+      no prose, no explanation.
+ 
+      CRITICAL: A debug-only playbook that merely prints a message is NEVER
+      a valid remediation. You must produce ansible.builtin.uri tasks that
+      make actual Kubernetes API calls to fix the problem.
+ 
+      ENVIRONMENT RULES:
+      1. ALL Kubernetes/OpenShift API calls use ansible.builtin.uri — never
+         k8s, kubernetes.core.k8s, or community.kubernetes modules.
+      2. Authenticate with the in-cluster service-account:
+           token:   lookup('file', '/var/run/secrets/kubernetes.io/serviceaccount/token')
+           ca_path: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+           API base: https://kubernetes.default.svc
+      3. Use ONLY namespaces, deployments, configmaps explicitly named in the
+         incident details. Never invent resource names.
+      4. All mutations must be idempotent — use PATCH method with
+         Content-Type: application/strategic-merge-patch+json.
+      5. No destructive, irreversible, or environment-wide changes.
+      6. If safe remediation is not possible, use ansible.builtin.fail with
+         a clear explanation.
+ 
+      APPROACH:
+      - Inspect affected resources (GET) before changing anything.
+      - Apply targeted changes (PATCH annotations, scale, configmaps).
+      - Use when: conditions to skip if already resolved.
+      - Verify changes took effect where practical.
+      - Include a rescue block for failure handling.
+ 
+      YAML RULES:
+      - Quote any scalar containing ': ' or Jinja2 double-brace expressions.
+      - For messages use msg: >- or double-quoted strings.
+      - Define reusable values (API URL, token, headers) in vars.
   tasks:
     # ==================================================================
     # TEST 1: Minimal payload — just text + model (this worked before)
@@ -20,7 +57,7 @@
           Authorization: "Bearer {{ lightspeed_wca_token | default('redhat') }}"
         body_format: json
         body:
-          text: "{{ lightspeed_prompt }}"
+          text: "{{ lightspeed_instructions ~ lightspeed_prompt }}"
           model: "{{ lightspeed_model }}"
           customPrompt: "{{ lightspeed_custom_prompt }}"
         validate_certs: false
