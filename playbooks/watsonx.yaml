@@ -71,7 +71,7 @@
           text: "{{ lightspeed_prompt }}"
           no_tools: true
           model: "{{ lightspeed_model }}"
-          system_prompt: "{{ lightspeed_system_prompt }}"
+          customPrompt: "{{ lightspeed_custom_prompt }}"
         validate_certs: false
         status_code: 200
       register: response
