@@ -3,16 +3,6 @@
   hosts: localhost
   gather_facts: false
   vars:
-    lightspeed_system_prompt: |
-      You generate only YAML for Ansible automation.
-      Return exactly one fenced yaml block and no prose outside it.
-      The fenced yaml block must contain a YAML mapping with these top-level keys:
-      title, summary, preconditions, expected_outcome, playbook_ref, action_ref,
-      provider_name, provider_run_id, status, callback_url, correlation_id, playbook_yaml.
-      Use playbook_yaml: | and make that value valid YAML for a list of Ansible plays beginning with ---.
-      Do not append any extra top-level keys after playbook_yaml.
-      Quote any YAML scalar inside playbook_yaml that contains ': ' or a Jinja template expression written with double curly braces.
-      For human-readable messages, prefer msg: >- or a double-quoted string.
 
   tasks:
     - name: Send request to AI API
