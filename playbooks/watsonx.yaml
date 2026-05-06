@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: false
   vars:
-    lightspeed_custom_prompt: "Generate an Ansible playbook"
+    lightspeed_custom_prompt: "Generate a production-ready Ansible playbook for the following task: {goal}"
   tasks:
     # ==================================================================
     # TEST 1: Minimal payload — just text + model (this worked before)
