@@ -3,12 +3,7 @@
   hosts: localhost
   gather_facts: false
   vars:
-    lightspeed_custom_prompt: !unsafe >-
-      Generate a multi-task Ansible playbook to resolve the RCA in {goal}.
-      Use ansible.builtin.uri for all Kubernetes API calls.
-      Never use k8s modules. Include inspect, patch, and verify tasks.
-      Use the service-account token and CA bundle for auth.
-      Include a rescue block. No debug-only playbooks.
+    lightspeed_custom_prompt: "Generate an Ansible playbook for: {goal}"
   tasks:
     # ==================================================================
     # TEST 1: Minimal payload — just text + model (this worked before)
