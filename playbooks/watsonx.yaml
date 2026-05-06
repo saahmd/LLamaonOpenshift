@@ -41,15 +41,10 @@
       - Verify changes took effect where practical
       - Include a rescue block for failure handling 
   tasks:
-    - name: Debug the request body being sent
-      ansible.builtin.debug:
-        msg:
-          url: "{{ input_lightspeed_url }}"
-          body_keys: "{{ ['text', 'no_tools', 'model', 'system_prompt'] }}"
-          system_prompt_length: "{{ lightspeed_system_prompt | length }}"
-          text_first_100: "{{ lightspeed_prompt[:100] }}"
-          
-    - name: Send request to AI API
+    # ==================================================================
+    # TEST 1: Minimal payload — just text + model (this worked before)
+    # ==================================================================
+    - name: "TEST 1 — minimal payload (text + model only)"
       ansible.builtin.uri:
         url: "{{ input_lightspeed_url }}"
         method: POST
@@ -58,32 +53,38 @@
           Authorization: "Bearer {{ lightspeed_wca_token | default('redhat') }}"
         body_format: json
         body:
-          customPrompt: "{{ lightspeed_system_prompt }}"
           text: "{{ lightspeed_prompt }}"
-          no_tools: true
           model: "{{ lightspeed_model }}"
         validate_certs: false
-        status_code: 200
-      register: response
+        status_code: [200, 400, 500]
+        timeout: 120
+      register: test1
  
-    - name: Display API response
+    - name: "TEST 1 result"
       ansible.builtin.debug:
-        msg: "{{ response.json }}"
+        msg: "Status: {{ test1.status }} — {{ test1.json | default(test1.msg) }}"
+
+    # ==================================================================
+    # TEST 2: Add customPrompt with {goal}
+    # ==================================================================
+    - name: "TEST 2 — add customPrompt"
+      ansible.builtin.uri:
+        url: "{{ input_lightspeed_url }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Bearer {{ lightspeed_wca_token | default('redhat') }}"
+        body_format: json
+        body:
+          text: "{{ lightspeed_prompt }}"
+          model: "{{ lightspeed_model }}"
+          customPrompt: "{{ lightspeed_custom_prompt }}"
+        validate_certs: false
+        status_code: [200, 400, 500]
+        timeout: 120
+      register: test2
  
-    - name: Preserve raw YAML playbook (string)
-      ansible.builtin.set_fact:
-        lightspeed_playbook_raw: "{{ response.json.playbook }}"
- 
-    - name: Set stat on raw playbook YAML
-      ansible.builtin.set_stats:
-        data:
-          lightspeed_playbook: "{{ lightspeed_playbook_raw }}"
- 
-    - name: Display Ansible Playbook in JSON
+    - name: "TEST 2 result"
       ansible.builtin.debug:
-        msg: "{{ lightspeed_playbook_raw }}"
- 
-    - name: Display Ansible Playbook in YAML
-      ansible.builtin.debug:
-        msg: "{{ lightspeed_playbook_raw | to_nice_yaml(sort_keys=False) }}"
- 
+        msg: "Status: {{ test2.status }} — {{ test2.json | default(test2.msg) }}"
+
