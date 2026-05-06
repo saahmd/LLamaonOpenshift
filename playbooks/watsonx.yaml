@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: false
   vars:
-    lightspeed_system_prompt: |
+    lightspeed_system_prompt: !unsafe |
       You are an Ansible playbook generator for OpenShift-based IMS remediation.
       Your ONLY job is to produce a playbook that resolves the issue described
       in the root-cause analysis (RCA) provided in the user prompt.
