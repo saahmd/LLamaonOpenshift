@@ -13,26 +13,6 @@
     # ==================================================================
     # TEST 1: Minimal payload — just text + model (this worked before)
     # ==================================================================
-    - name: "TEST 1 — minimal payload (text + model only)"
-      ansible.builtin.uri:
-        url: "{{ input_lightspeed_url }}"
-        method: POST
-        headers:
-          Content-Type: "application/json"
-          Authorization: "Bearer {{ lightspeed_wca_token | default('redhat') }}"
-        body_format: json
-        body:
-          text: "{{ lightspeed_prompt }}"
-          model: "{{ lightspeed_model }}"
-        validate_certs: false
-        status_code: [200, 400, 500]
-        timeout: 120
-      register: test1
- 
-    - name: "TEST 1 result"
-      ansible.builtin.debug:
-        msg: "Status: {{ test1.status }} — {{ test1.json | default(test1.msg) }}"
-
     # ==================================================================
     # TEST 2: Add customPrompt with {goal}
     # ==================================================================
