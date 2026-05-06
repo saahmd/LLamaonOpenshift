@@ -51,6 +51,14 @@
       - Include a rescue block so failures are surfaced clearly.
  
   tasks:
+    - name: Debug the request body being sent
+      ansible.builtin.debug:
+        msg:
+          url: "{{ input_lightspeed_url }}"
+          body_keys: "{{ ['text', 'no_tools', 'model', 'system_prompt'] }}"
+          system_prompt_length: "{{ lightspeed_system_prompt | length }}"
+          text_first_100: "{{ lightspeed_prompt[:100] }}"
+          
     - name: Send request to AI API
       ansible.builtin.uri:
         url: "{{ input_lightspeed_url }}"
